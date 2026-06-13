@@ -444,16 +444,17 @@ async def claim_relay(
         )
         sub_plan = "free"
 
-    if sub_plan == "free":
-        first_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        claims_reset = recipient.get("claims_month_reset", datetime.min)
-        if claims_reset < first_of_month:
-            await db.users.update_one(
-                {"_id": recipient["_id"]},
-                {"$set": {"claims_this_month": 0, "claims_month_reset": now}},
-            )
-            recipient["claims_this_month"] = 0
+    # Always track claims this month for statistics
+    first_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    claims_reset = recipient.get("claims_month_reset", datetime.min)
+    if claims_reset < first_of_month:
+        await db.users.update_one(
+            {"_id": recipient["_id"]},
+            {"$set": {"claims_this_month": 0, "claims_month_reset": now}},
+        )
+        recipient["claims_this_month"] = 0
 
+    if sub_plan == "free":
         if recipient.get("claims_this_month", 0) >= settings.FREE_TIER_MONTHLY_CLAIMS:
             raise HTTPException(
                 status_code=status.HTTP_402_PAYMENT_REQUIRED,
@@ -478,12 +479,11 @@ async def claim_relay(
             detail="Someone beat you to it! This relay was just claimed. 🏃💨",
         )
 
-    # Increment claim counter for free tier
-    if sub_plan == "free":
-        await db.users.update_one(
-            {"_id": recipient["_id"]},
-            {"$inc": {"claims_this_month": 1}},
-        )
+    # Increment claim counter for all tiers
+    await db.users.update_one(
+        {"_id": recipient["_id"]},
+        {"$inc": {"claims_this_month": 1}},
+    )
 
     # ── Notify donor ──
     donor = await db.users.find_one({"_id": relay["donor_id"]})
@@ -556,13 +556,11 @@ async def unclaim_relay(
         }},
     )
 
-    # Decrement claim counter for free tier
-    sub_plan = recipient.get("subscription", {}).get("plan", "free")
-    if sub_plan == "free":
-        await db.users.update_one(
-            {"_id": recipient["_id"]},
-            {"$inc": {"claims_this_month": -1}},
-        )
+    # Decrement claim counter for all tiers
+    await db.users.update_one(
+        {"_id": recipient["_id"]},
+        {"$inc": {"claims_this_month": -1}},
+    )
 
     # ── Notify donor ──
     donor = await db.users.find_one({"_id": relay["donor_id"]})
