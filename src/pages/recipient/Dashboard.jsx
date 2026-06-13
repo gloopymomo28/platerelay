@@ -11,9 +11,9 @@ export default function RecipientDashboard() {
   // ── Fetch real data from API ──
   const { data: impactData, isLoading } = useImpactSummary();
 
-  const totalMeals = impactData?.total_meals ?? 0;
-  const totalClaims = impactData?.total_claims ?? 0;
-  const partnerDonors = impactData?.top_donors?.length ?? 0;
+  const totalMeals = impactData?.total_meals_received ?? 0;
+  const totalClaims = impactData?.total_relays_claimed ?? 0;
+  const partnerDonors = impactData?.unique_donors ?? 0;
 
   const subscription = user?.subscription || {};
   const planName = (subscription.plan || 'free').charAt(0).toUpperCase() + (subscription.plan || 'free').slice(1);

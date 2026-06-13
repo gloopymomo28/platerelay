@@ -17,9 +17,9 @@ export default function DonorDashboard() {
     r => r.status === 'active' || r.status === 'claimed'
   );
 
-  const totalMeals = impactData?.total_meals ?? user?.total_meals ?? 0;
-  const totalRelays = impactData?.total_relays ?? user?.total_relays ?? 0;
-  const sheltersReached = impactData?.shelters_reached ?? 0;
+  const totalMeals = impactData?.total_meals_donated ?? user?.total_meals ?? 0;
+  const totalRelays = impactData?.total_relays_posted ?? user?.total_relays ?? 0;
+  const sheltersReached = impactData?.unique_recipients ?? 0;
   const co2Saved = impactData?.co2_kg_saved ?? user?.co2_saved ?? 0;
 
   const stats = [
