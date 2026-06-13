@@ -21,6 +21,20 @@ const categoryEmoji = {
   'other': '🍱',
 };
 
+const userIcon = new L.divIcon({
+  className: 'custom-user-icon',
+  html: `<div style="background-color: #3b82f6; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9]
+});
+
+const relayIcon = new L.divIcon({
+  className: 'custom-relay-icon',
+  html: `<div style="background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7]
+});
+
 const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPending }) => {
   const mapRef = useRef(null);
 
@@ -59,7 +73,7 @@ const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPendin
 
       {/* Shelter Marker */}
       {centerLat && centerLng && (
-        <Marker position={position}>
+        <Marker position={position} icon={userIcon}>
           <Popup>
             <div className="text-center font-display font-bold">Your Location</div>
           </Popup>
@@ -73,7 +87,7 @@ const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPendin
         const [lng, lat] = coords;
         
         return (
-          <Marker key={relay.id} position={[lat, lng]}>
+          <Marker key={relay.id} position={[lat, lng]} icon={relayIcon}>
             <Popup className="custom-popup">
               <div className="font-body text-sm min-w-[200px]">
                 <div className="flex items-center gap-2 mb-2 border-b pb-2">
