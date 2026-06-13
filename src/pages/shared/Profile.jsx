@@ -45,8 +45,22 @@ export default function Profile() {
 
   // Use current user data if viewing own profile, otherwise mock
   const isOwnProfile = !id || id === 'me' || id === currentUser?._id;
+  
+  // Real stats from the backend vs mock stats
   const profile = isOwnProfile && currentUser
-    ? { ...getProfileData(id), org_name: currentUser.org_name, role: currentUser.role }
+    ? { 
+        ...currentUser,
+        stats: {
+          total_meals: currentUser.total_meals || 0,
+          total_relays: currentUser.total_relays || 0,
+          shelters_reached: 0, // Would need aggregate query for this
+          co2_kg_saved: currentUser.co2_saved || 0,
+        },
+        badges: currentUser.badges || [],
+        recent_relays: [], // Would need to fetch from /api/relays
+        city: currentUser.location?.city || 'City not set',
+        state: currentUser.location?.state || 'State not set'
+      }
     : getProfileData(id);
 
   useEffect(() => {
