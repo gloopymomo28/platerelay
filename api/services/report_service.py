@@ -63,6 +63,35 @@ async def compute_impact_summary(user: dict) -> dict:
     """Compute on-demand impact stats for a user."""
     db = get_db()
 
+    from datetime import datetime
+    import calendar
+
+    def get_last_6_months_labels():
+        now = datetime.utcnow()
+        labels = []
+        for i in range(5, -1, -1):
+            m = now.month - i
+            if m <= 0:
+                m += 12
+            labels.append(calendar.month_abbr[m])
+        return labels
+
+    def build_monthly_stats(relays_list, date_field):
+        now = datetime.utcnow()
+        months = get_last_6_months_labels()
+        monthly_map = {m: 0 for m in months}
+        
+        for r in relays_list:
+            dt = r.get(date_field)
+            if isinstance(dt, datetime):
+                # Only include if it's within the last 6 months
+                if (now.year - dt.year) * 12 + now.month - dt.month <= 5:
+                    month_label = dt.strftime("%b")
+                    if month_label in monthly_map:
+                        monthly_map[month_label] += calculate_total_meals([r])
+        
+        return [{"month": m, "meals": monthly_map[m]} for m in months]
+
     if user["role"] == "donor":
         relays = await db.relays.find({
             "donor_id": user["_id"],
@@ -71,8 +100,8 @@ async def compute_impact_summary(user: dict) -> dict:
 
         total_meals = calculate_total_meals(relays)
         co2_saved = calculate_co2_saved(relays)
+        monthly_stats = build_monthly_stats(relays, "created_at")
 
-        # Find unique recipients
         unique_recipients = set()
         for r in relays:
             if r.get("claimed_by"):
@@ -83,6 +112,7 @@ async def compute_impact_summary(user: dict) -> dict:
             "total_meals_donated": total_meals,
             "co2_kg_saved": co2_saved,
             "unique_recipients": len(unique_recipients),
+            "monthly": monthly_stats,
             "message": "You're making a real impact! Every meal counts. 🌍💚",
         }
 
@@ -92,8 +122,8 @@ async def compute_impact_summary(user: dict) -> dict:
         }).to_list(None)
 
         total_meals = calculate_total_meals(claimed)
+        monthly_stats = build_monthly_stats(claimed, "claimed_at")
 
-        # Find unique donors
         unique_donors = set()
         for r in claimed:
             if r.get("donor_id"):
@@ -103,6 +133,7 @@ async def compute_impact_summary(user: dict) -> dict:
             "total_relays_claimed": len(claimed),
             "total_meals_received": total_meals,
             "unique_donors": len(unique_donors),
+            "monthly": monthly_stats,
             "message": "Keep claiming — every relay brings a smile. 😊",
         }
 

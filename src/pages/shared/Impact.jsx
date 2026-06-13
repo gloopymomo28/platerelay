@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import anime from 'animejs';
 import { Card } from '../../components/ui/Card';
 import useAuthStore from '../../store/authStore';
@@ -108,6 +108,7 @@ export default function Impact() {
               <YAxis tick={{ fill: '#C1CFDA', fontSize: 12 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(193,207,218,0.05)' }} />
               <Bar dataKey="meals" radius={[6, 6, 0, 0]}>
+                <LabelList dataKey="meals" position="top" fill="#C1CFDA" fontSize={12} formatter={(val) => val > 0 ? val : ''} />
                 {stats.monthly.map((_, index) => (
                   <Cell key={index} fill={index === stats.monthly.length - 1 ? '#59F8E8' : '#20A4F3'} />
                 ))}
