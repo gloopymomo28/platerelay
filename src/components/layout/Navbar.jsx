@@ -43,7 +43,7 @@ const Navbar = () => {
   };
 
   const getDashboardLink = () => {
-    if (!user) return '/login';
+    if (!user) return '/';
     if (user.role === 'admin') return '/admin';
     if (user.role === 'donor') return '/donor/dashboard';
     return '/recipient/dashboard';
