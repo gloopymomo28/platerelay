@@ -77,8 +77,8 @@ export default function Register() {
         return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
       }
 
-      // 2. Fallback to just City and State if full street address is not found in OSM
-      const cityQuery = `${addressData.city}, ${addressData.state}`;
+      // 2. Fallback to just City, State, and Pincode if full street address is not found in OSM
+      const cityQuery = `${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
       res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityQuery)}&format=json&limit=1`);
       data = await res.json();
 
