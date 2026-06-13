@@ -78,4 +78,16 @@ except Exception as e:
     async def import_error():
         return {"error": _import_error}
 
+@app.on_event("startup")
+async def startup_db_indexes():
+    try:
+        from database import get_db
+        import pymongo
+        db = get_db()
+        await db.users.create_index([("location", pymongo.GEOSPHERE)])
+        await db.relays.create_index([("pickup_location", pymongo.GEOSPHERE)])
+        print("Geospatial indexes verified/created successfully.")
+    except Exception as e:
+        print("Failed to create geospatial indexes:", e)
+
 handler = Mangum(app)

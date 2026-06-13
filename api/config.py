@@ -39,8 +39,8 @@ class Settings(BaseSettings):
     # ── App settings ─────────────────────────────────────────
     APP_ENV: str = Field(default="development")
     FRONTEND_URL: str = Field(default="https://platerelay.vercel.app")
-    DEFAULT_RELAY_RADIUS_KM: float = Field(default=10.0)
-    MAX_RELAY_RADIUS_KM: float = Field(default=25.0)
+    DEFAULT_RELAY_RADIUS_KM: float = Field(default=25.0)
+    MAX_RELAY_RADIUS_KM: float = Field(default=50.0)
     FREE_TIER_MONTHLY_CLAIMS: int = Field(default=3)
 
     class Config:
