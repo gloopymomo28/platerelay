@@ -76,7 +76,7 @@ export default function Impact() {
 
         {/* Header */}
         <div className="impact-item" style={{ opacity: 0 }}>
-          <h1 className="text-4xl font-display font-bold text-white mb-2">Your Impact 🌍</h1>
+          <h1 className="text-4xl font-display font-bold text-white mb-2">Your Impact</h1>
           <p className="text-steel font-body">
             {isdonor
               ? "Every plate you rescued is a story of generosity."
@@ -143,7 +143,7 @@ export default function Impact() {
         {/* Partners */}
         <LiquidGlassCard className="p-6 border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <h2 className="text-xl font-display font-bold text-white mb-4">
-            {isdonor ? '🤝 Top Recipient Partners' : '🏢 Top Donor Partners'}
+            {isdonor ? 'Top Recipient Partners' : 'Top Donor Partners'}
           </h2>
           <div className="space-y-3">
             {(isdonor ? stats.top_partners : stats.top_donors).map((partner, i) => (
@@ -160,7 +160,7 @@ export default function Impact() {
         {/* Badges (donor only) */}
         {isdonor && (
           <LiquidGlassCard className="p-6 border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
-            <h2 className="text-xl font-display font-bold text-white mb-4">🏆 Badges Earned</h2>
+            <h2 className="text-xl font-display font-bold text-white mb-4">Badges Earned</h2>
             <div className="grid grid-cols-3 gap-3">
               {stats.badges.map(badge => (
                 <div
@@ -188,7 +188,6 @@ export default function Impact() {
         <div className="impact-item" style={{ opacity: 0 }}>
           <LiquidGlassCard className="p-8 border-green-500/20 bg-gradient-to-r from-green-500/10 to-cyan/5" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
             <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-              <div className="text-6xl">🌱</div>
               <div>
                 <h3 className="text-2xl font-display font-bold text-white mb-2">
                   You've offset the equivalent of <span className="text-green-400">{Math.round(stats.co2_kg_saved / 2.5)} car trips</span>

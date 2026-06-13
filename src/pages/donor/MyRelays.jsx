@@ -19,13 +19,7 @@ const statusConfig = {
   cancelled: { label: 'Cancelled', variant: 'cancelled', icon: XCircle },
 };
 
-const categoryEmoji = {
-  'cooked_meals': '🍛',
-  'bakery': '🥐',
-  'raw_produce': '🥬',
-  'packaged': '📦',
-  'other': '🍱',
-};
+
 
 const vegLabel = {
   'veg': 'Veg',
@@ -146,8 +140,7 @@ export default function MyRelays() {
         </LiquidGlassCard>
       ) : filtered.length === 0 ? (
         <LiquidGlassCard className="p-12 text-center border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
-          <div className="text-5xl mb-4">🍳</div>
-          <h3 className="text-xl font-bold text-white font-display mb-2">Nothing here yet</h3>
+          <h3 className="text-xl font-bold text-white font-display mb-2 mt-4">Nothing here yet</h3>
           <p className="text-steel font-body mb-6">No relays match this filter. Try another tab or post a new relay.</p>
           <Link to="/donor/post"><Button variant="ghost">Post a Relay</Button></Link>
         </LiquidGlassCard>
@@ -167,16 +160,12 @@ export default function MyRelays() {
               >
                 {/* Photo */}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-steel-10 flex-shrink-0 overflow-hidden relative">
-                  {relay.photo?.thumbnail_url || relay.photo?.cloudinary_url ? (
+                  {(relay.photo?.thumbnail_url || relay.photo?.cloudinary_url) && (
                     <img 
                       src={relay.photo.thumbnail_url || relay.photo.cloudinary_url} 
                       alt={relay.food_name}
                       className="w-full h-full object-cover"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">
-                      {categoryEmoji[relay.category] || '🍱'}
-                    </div>
                   )}
                 </div>
 
@@ -193,8 +182,8 @@ export default function MyRelays() {
                   </div>
                   <h3 className="text-white font-display font-bold text-lg leading-tight truncate">{relay.food_name}</h3>
                   <div className="flex flex-wrap gap-4 mt-1 text-sm text-steel font-body">
-                    <span>🍽️ {relay.quantity?.value} {relay.quantity?.unit}</span>
-                    <span>⏱️ {formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
+                    <span>{relay.quantity?.value} {relay.quantity?.unit}</span>
+                    <span>{formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
                   </div>
                 </div>
 

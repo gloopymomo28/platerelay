@@ -26,10 +26,10 @@ export default function DonorDashboard() {
   const co2Saved = impactData?.co2_kg_saved ?? user?.co2_saved ?? 0;
 
   const stats = [
-    { label: 'Meals Donated', value: totalMeals.toLocaleString(), icon: '🍽️', color: '#20A4F3', sub: 'all-time' },
-    { label: 'Active Relays', value: activeRelays.length.toString(), icon: '⚡', color: '#59F8E8', sub: `${activeRelays.filter(r => r.status === 'claimed').length} claimed` },
-    { label: 'Shelters Reached', value: sheltersReached.toString(), icon: '🤝', color: '#F4A22D', sub: 'all-time' },
-    { label: 'CO₂ Saved (kg)', value: Math.round(co2Saved).toLocaleString(), icon: '🌱', color: '#4ade80', sub: 'equivalent' },
+    { label: 'Meals Donated', value: totalMeals.toLocaleString(), color: '#20A4F3', sub: 'all-time' },
+    { label: 'Active Relays', value: activeRelays.length.toString(), color: '#59F8E8', sub: `${activeRelays.filter(r => r.status === 'claimed').length} claimed` },
+    { label: 'Shelters Reached', value: sheltersReached.toString(), color: '#F4A22D', sub: 'all-time' },
+    { label: 'CO₂ Saved (kg)', value: Math.round(co2Saved).toLocaleString(), color: '#4ade80', sub: 'equivalent' },
   ];
 
   const userBadges = user?.badges || impactData?.badges || [];
@@ -92,7 +92,6 @@ export default function DonorDashboard() {
         {/* ── Safety Warning ── */}
         <LiquidGlassCard className="dash-item opacity-0 p-4 flex items-start gap-4" blurIntensity="md" shadowIntensity="sm" glowIntensity="none" borderRadius="16px"
           style={{ background: 'rgba(148,28,47,0.08)', border: '1px solid rgba(148,28,47,0.25)' }}>
-          <span className="text-xl flex-shrink-0 mt-0.5">🌡️</span>
           <div>
             <h3 className="font-display font-bold text-sm mb-0.5" style={{ color: '#f87171' }}>Food Safety Reminder</h3>
             <p className="font-body text-sm" style={{ color: 'rgba(193,207,218,0.7)' }}>
@@ -106,8 +105,7 @@ export default function DonorDashboard() {
           {stats.map(stat => (
             <LiquidGlassCard key={stat.label} className="p-5 transition-all hover:-translate-y-1" blurIntensity="sm" shadowIntensity="xs" glowIntensity="none" borderRadius="16px"
               style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)' }}>
-              <div className="text-2xl mb-3">{stat.icon}</div>
-              <div className="text-2xl md:text-3xl font-bold font-display mb-0.5" style={{ color: stat.color }}>
+              <div className="text-2xl md:text-3xl font-bold font-display mb-0.5 mt-2" style={{ color: stat.color }}>
                 {isLoading ? <Loader2 className="w-6 h-6 animate-spin inline" /> : stat.value}
               </div>
               <div className="text-sm font-body text-white mb-1">{stat.label}</div>
@@ -134,8 +132,7 @@ export default function DonorDashboard() {
           ) : activeRelays.length === 0 ? (
             <LiquidGlassCard className="p-16 text-center" blurIntensity="md" shadowIntensity="sm" glowIntensity="none" borderRadius="16px"
               style={{ background: 'rgba(193,207,218,0.03)', border: '1px dashed rgba(193,207,218,0.15)' }}>
-              <div className="text-5xl mb-4">🍳</div>
-              <h3 className="text-xl font-bold text-white font-display mb-2">No active relays yet</h3>
+              <h3 className="text-xl font-bold text-white font-display mb-2 mt-4">No active relays yet</h3>
               <p className="font-body mb-6" style={{ color: '#C1CFDA' }}>Post your surplus food to notify nearby shelters instantly.</p>
               <Link to="/donor/post">
                 <button className="px-6 py-3 rounded-xl font-display font-bold text-sm transition-all hover:opacity-80"

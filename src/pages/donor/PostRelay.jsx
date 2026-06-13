@@ -83,7 +83,7 @@ export default function PostRelay() {
 
       createRelay.mutate(formData, {
         onSuccess: () => {
-          toast.success("Your relay is live! Someone's night just got better. 🍽️");
+          toast.success("Your relay is live! Someone's night just got better.");
           navigate('/donor/relays');
         },
         onError: (error) => {
@@ -111,7 +111,7 @@ export default function PostRelay() {
           <div className="space-y-6">
             <div className="bg-crimson/10 border border-crimson rounded-lg p-6">
               <h2 className="text-2xl font-display font-bold text-crimson mb-4 flex items-center gap-2">
-                ⚠️ FOOD SAFETY COMMITMENT
+                FOOD SAFETY COMMITMENT
               </h2>
               <p className="text-steel font-body mb-4">Before posting, confirm that this food:</p>
               <ul className="space-y-2 text-white font-body mb-6">
@@ -232,8 +232,7 @@ export default function PostRelay() {
                 <div className="text-azure font-bold">{selectedPhoto.name} selected</div>
               ) : (
                 <>
-                  <div className="text-4xl mb-2">📸</div>
-                  <p className="text-white font-bold font-display">Click to upload food photo</p>
+                  <p className="text-white font-bold font-display mt-2">Click to upload food photo</p>
                   <p className="text-steel text-sm font-body mt-1">Photo is required to build trust.</p>
                 </>
               )}

@@ -23,10 +23,10 @@ export default function RecipientDashboard() {
   const claimsRemaining = isFree ? Math.max(0, claimLimit - claimsThisMonth) : null;
 
   const stats = [
-    { label: 'Meals Received', value: totalMeals.toLocaleString(), icon: '🍽️', color: '#20A4F3', sub: 'all-time' },
-    { label: 'Claims This Month', value: claimsThisMonth.toString(), icon: '✅', color: '#59F8E8', sub: isFree ? `${claimsRemaining} remaining` : 'Unlimited ✨' },
-    { label: 'Plan', value: planName, icon: '⭐', color: '#F4A22D', sub: isFree ? 'Upgrade to Saathi' : 'Active' },
-    { label: 'Partner Donors', value: partnerDonors.toString(), icon: '🏢', color: '#4ade80', sub: 'active' },
+    { label: 'Meals Received', value: totalMeals.toLocaleString(), color: '#20A4F3', sub: 'all-time' },
+    { label: 'Claims This Month', value: claimsThisMonth.toString(), color: '#59F8E8', sub: isFree ? `${claimsRemaining} remaining` : 'Unlimited ✨' },
+    { label: 'Plan', value: planName, color: '#F4A22D', sub: isFree ? 'Upgrade to Saathi' : 'Active' },
+    { label: 'Partner Donors', value: partnerDonors.toString(), color: '#4ade80', sub: 'active' },
   ];
 
   useEffect(() => {
