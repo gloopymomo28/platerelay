@@ -24,6 +24,22 @@ export default function Impact() {
   const { data: realStats, isLoading } = useImpactSummary();
   
   // Map real backend data to the component's expected structure, falling back to safe defaults
+  const badgeMap = {
+    first_relay:       { emoji: '🌱', title: 'First Relay',   glow: 'rgba(89,248,232,0.6)', desc: 'Completed your first food relay!' },
+    hunger_hero:       { emoji: '🦸', title: 'Hunger Hero',   glow: 'rgba(244,162,45,0.6)', desc: '10 completed relays' },
+    food_champion:     { emoji: '🏅', title: 'Food Champ',    glow: 'rgba(32,164,243,0.6)', desc: '25 completed relays' },
+    platerelay_legend: { emoji: '🏆', title: 'Legend',         glow: 'rgba(148,28,47,0.6)', desc: '50 completed relays' },
+    consistency_king:  { emoji: '👑', title: 'Consistency',    glow: 'rgba(244,162,45,0.6)', desc: '7 consecutive days' },
+    community_pillar:  { emoji: '🏛️', title: 'Community',     glow: 'rgba(89,248,232,0.6)', desc: '10+ unique recipients' },
+    century_club:      { emoji: '💯', title: 'Century Club',   glow: 'rgba(32,164,243,0.6)', desc: '100+ total meals donated' },
+  };
+
+  const userBadges = user?.badges || realStats?.badges || [];
+  const allBadges = Object.entries(badgeMap).map(([key, meta]) => ({
+    ...meta,
+    earned: userBadges.some(b => (b.type || b.badge_type || b) === key),
+  }));
+
   const stats = {
     total_meals: realStats?.total_meals_donated || realStats?.total_meals_received || 0,
     total_relays: realStats?.total_relays_posted || realStats?.total_relays_claimed || 0,
@@ -36,7 +52,7 @@ export default function Impact() {
     ],
     top_partners: realStats?.top_partners || [],
     top_donors: realStats?.top_donors || [],
-    badges: user?.badges || []
+    badges: allBadges
   };
   const titleRef = useRef(null);
 

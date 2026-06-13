@@ -42,7 +42,7 @@ export default function DonorDashboard() {
 
   const allBadges = Object.entries(badgeMap).map(([key, meta]) => ({
     ...meta,
-    earned: userBadges.some(b => (b.badge_type || b) === key),
+    earned: userBadges.some(b => (b.type || b.badge_type || b) === key),
   }));
 
   useEffect(() => {
