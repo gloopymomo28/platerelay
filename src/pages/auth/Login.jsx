@@ -59,7 +59,7 @@ export default function Login() {
              style={{ border: '3px solid #00E5FF', boxShadow: '0 0 30px rgba(0,229,255,0.4)', animationDelay: '1s' }} alt="" />
 
         <div className="relative z-10 text-center max-w-sm">
-          <div className="text-8xl mb-8">🍽️</div>
+          <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-40 h-40 object-contain mb-8 drop-shadow-[0_0_30px_rgba(255,122,0,0.4)] animate-float" />
           <h2 className="text-3xl font-display font-bold text-white mb-4">
             Every relay matters.
           </h2>
@@ -79,11 +79,9 @@ export default function Login() {
       {/* Right — form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-10 group">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-sm transition-all shadow-[0_0_15px_rgba(234,88,12,0.3)] group-hover:shadow-[0_0_20px_rgba(234,88,12,0.5)]"
-              style={{ background: 'linear-gradient(135deg, #FF7A00, #EA580C)' }}>PR</div>
-            <span className="font-display font-bold text-lg text-white group-hover:text-orange-400 transition-colors">PlateRelay</span>
+          <Link to="/" className="flex items-center gap-3 mb-10 group">
+            <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
+            <span className="font-display font-bold text-xl text-white group-hover:text-[#FF7A00] transition-colors">PlateRelay</span>
           </Link>
 
           <div className="mb-8">

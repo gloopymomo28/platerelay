@@ -178,10 +178,9 @@ export default function Register() {
 
       <div className="w-full max-w-2xl relative">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 mb-8 group">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm"
-            style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>PR</div>
-          <span className="font-display font-bold text-lg text-white group-hover:text-azure transition-colors">PlateRelay</span>
+        <Link to="/" className="flex items-center gap-3 mb-8 group">
+          <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
+          <span className="font-display font-bold text-xl text-white group-hover:text-[#FF7A00] transition-colors">PlateRelay</span>
         </Link>
 
         <div className="rounded-3xl p-8 md:p-10"

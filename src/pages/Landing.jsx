@@ -373,11 +373,8 @@ export default function Landing() {
       {/* ─── FOOTER ─── */}
       <footer className="py-10 px-4 border-t" style={{ borderColor: 'rgba(193,207,218,0.1)' }}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
-              PR
-            </div>
+          <div className="flex items-center gap-3">
+            <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,122,0,0.3)]" />
             <span className="font-display font-bold text-white">PlateRelay</span>
           </div>
           <p className="font-body text-sm text-center" style={{ color: 'rgba(193,207,218,0.5)' }}>
