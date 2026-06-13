@@ -9,6 +9,7 @@ import { Modal } from '../../components/ui/Modal';
 import toast from 'react-hot-toast';
 import { useMyRelays, useClaimedRelays, useCancelRelay } from '../../api/relays';
 import useAuthStore from '../../store/authStore';
+import { FloatingBackground } from '../../components/ui/FloatingBackground';
 
 const statusConfig = {
   active:    { label: 'Active',    variant: 'active',    icon: Clock },
@@ -98,21 +99,23 @@ export default function MyRelays() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-white">{isDonor ? 'My Relays' : 'My Claims'}</h1>
-          <p className="text-steel font-body mt-1">
-            {isDonor ? "Every meal you post is someone's dinner." : "Keep track of the food you've claimed."}
-          </p>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: '#03191E' }}>
+      <FloatingBackground />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 relative z-10">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-white">{isDonor ? 'My Relays' : 'My Claims'}</h1>
+            <p className="text-steel font-body mt-1">
+              {isDonor ? "Every meal you post is someone's dinner." : "Keep track of the food you've claimed."}
+            </p>
+          </div>
+          {isDonor && (
+            <Link to="/donor/post">
+              <Button variant="primary" icon={Plus}>Post New Relay</Button>
+            </Link>
+          )}
         </div>
-        {isDonor && (
-          <Link to="/donor/post">
-            <Button variant="primary" icon={Plus}>Post New Relay</Button>
-          </Link>
-        )}
-      </div>
 
       {/* Filter Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1 mb-6">
@@ -230,6 +233,7 @@ export default function MyRelays() {
           </Button>
         </div>
       </Modal>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import anime from 'animejs';
 import useAuthStore from '../../store/authStore';
 import { useMyRelays } from '../../api/relays';
 import { useImpactSummary } from '../../api/impact';
+import { FloatingBackground } from '../../components/ui/FloatingBackground';
 
 export default function DonorDashboard() {
   const user = useAuthStore(state => state.user);
@@ -59,8 +60,9 @@ export default function DonorDashboard() {
   const isLoading = impactLoading || relaysLoading;
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #03191E 0%, #041f26 100%)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="min-h-screen relative" style={{ background: '#03191E' }}>
+      <FloatingBackground />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 relative z-10">
 
         {/* ── Welcome Banner ── */}
         <div className="dash-item opacity-0 relative rounded-3xl overflow-hidden p-8 md:p-10"

@@ -5,6 +5,7 @@ import { Card } from '../../components/ui/Card';
 import useAuthStore from '../../store/authStore';
 import { useImpactSummary } from '../../api/impact';
 import { Loader2 } from 'lucide-react';
+import { FloatingBackground } from '../../components/ui/FloatingBackground';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -68,17 +69,19 @@ export default function Impact() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="min-h-screen relative overflow-hidden" style={{ background: '#03191E' }}>
+      <FloatingBackground />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8 relative z-10">
 
-      {/* Header */}
-      <div className="impact-item" style={{ opacity: 0 }}>
-        <h1 className="text-4xl font-display font-bold text-white mb-2">Your Impact 🌍</h1>
-        <p className="text-steel font-body">
-          {isdonor
-            ? "Every plate you rescued is a story of generosity."
-            : "Every meal you collected helped someone sleep better tonight."}
-        </p>
-      </div>
+        {/* Header */}
+        <div className="impact-item" style={{ opacity: 0 }}>
+          <h1 className="text-4xl font-display font-bold text-white mb-2">Your Impact 🌍</h1>
+          <p className="text-steel font-body">
+            {isdonor
+              ? "Every plate you rescued is a story of generosity."
+              : "Every meal you collected helped someone sleep better tonight."}
+          </p>
+        </div>
 
       {/* Hero Stats */}
       <div className="impact-item grid grid-cols-2 md:grid-cols-4 gap-4" style={{ opacity: 0 }}>
@@ -198,6 +201,7 @@ export default function Impact() {
           </Card>
         </div>
       )}
+      </div>
     </div>
   );
 }

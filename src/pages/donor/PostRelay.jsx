@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/Input';
 import toast from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
 import { useCreateRelay } from '../../api/relays';
+import { FloatingBackground } from '../../components/ui/FloatingBackground';
 
 export default function PostRelay() {
   const navigate = useNavigate();
@@ -96,11 +97,13 @@ export default function PostRelay() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-display font-bold text-white mb-2">Post a Relay</h1>
-        <p className="text-steel font-body">Got food? Be someone's hero tonight.</p>
-      </div>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: '#03191E' }}>
+      <FloatingBackground />
+      <div className="max-w-3xl mx-auto px-4 py-12 relative z-10">
+        <div className="mb-8">
+          <h1 className="text-3xl font-display font-bold text-white mb-2">Post a Relay</h1>
+          <p className="text-steel font-body">Got food? Be someone's hero tonight.</p>
+        </div>
 
       <Card className="p-8 border-steel/20 bg-midnight/50 backdrop-blur-md">
         {step === 1 && (
@@ -251,6 +254,7 @@ export default function PostRelay() {
           </form>
         )}
       </Card>
+      </div>
     </div>
   );
 }
