@@ -165,7 +165,7 @@ export default function MyRelays() {
                   </div>
                   <h3 className="text-white font-display font-bold text-lg leading-tight truncate">{relay.food_name}</h3>
                   <div className="flex flex-wrap gap-4 mt-1 text-sm text-steel font-body">
-                    <span>🍽️ {relay.quantity.value} {relay.quantity.unit}</span>
+                    <span>🍽️ {relay.quantity?.value} {relay.quantity?.unit}</span>
                     <span>⏱️ {formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
                   </div>
                 </div>

@@ -171,7 +171,7 @@ export default function BrowseListings() {
                         
                         <div className="mt-auto flex justify-between items-end">
                           <div>
-                            <div className="text-lg font-bold text-white">{relay.quantity.value} <span className="text-sm font-normal text-steel">{relay.quantity.unit}</span></div>
+                            <div className="text-lg font-bold text-white">{relay.quantity?.value} <span className="text-sm font-normal text-steel">{relay.quantity?.unit}</span></div>
                             <div className="text-xs text-steel">📍 {formatDistance(relay.distance_meters)} away</div>
                           </div>
                           <Button 

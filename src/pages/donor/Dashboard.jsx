@@ -161,7 +161,7 @@ export default function DonorDashboard() {
                     </div>
                   </div>
                   <h3 className="text-base font-bold text-white font-display mb-1 leading-tight">{relay.food_name}</h3>
-                  <p className="text-sm font-body" style={{ color: 'rgba(193,207,218,0.6)' }}>{relay.quantity} {relay.unit}</p>
+                  <p className="text-sm font-body" style={{ color: 'rgba(193,207,218,0.6)' }}>{relay.quantity?.value} {relay.quantity?.unit}</p>
                   <div className="mt-4 pt-4 border-t flex items-center text-xs font-body transition-colors"
                     style={{ borderColor: 'rgba(193,207,218,0.08)', color: 'rgba(193,207,218,0.4)' }}>
                     <span className="group-hover:text-azure transition-colors">View details →</span>
