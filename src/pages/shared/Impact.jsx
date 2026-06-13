@@ -3,45 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import anime from 'animejs';
 import { Card } from '../../components/ui/Card';
 import useAuthStore from '../../store/authStore';
-
-// Mock data — would come from /api/impact/summary in production
-const DONOR_STATS = {
-  total_meals: 1240,
-  total_relays: 58,
-  co2_kg_saved: 372.0,
-  shelters_reached: 14,
-  monthly: [
-    { month: 'Jan', meals: 80 },
-    { month: 'Feb', meals: 120 },
-    { month: 'Mar', meals: 190 },
-    { month: 'Apr', meals: 150 },
-    { month: 'May', meals: 210 },
-    { month: 'Jun', meals: 240 },
-  ],
-  top_partners: ['Hope Shelter', "St. Mary's Home", 'Green Valley NGO', 'City Food Bank'],
-  badges: [
-    { emoji: '🌱', title: 'First Relay', desc: 'Posted your first relay', earned: true },
-    { emoji: '🦸', title: 'Hunger Hero', desc: 'Donated 100+ meals', earned: true },
-    { emoji: '🏅', title: 'Food Champion', desc: 'Donated 500+ meals', earned: true },
-    { emoji: '🏆', title: 'PlateRelay Legend', desc: 'Donated 1000+ meals', earned: true },
-    { emoji: '⚡', title: 'Speed Feeder', desc: 'Posted relay with <30m claim time', earned: false },
-    { emoji: '🌍', title: 'Zero Waste Hero', desc: 'Zero expired relays for 30 days', earned: false },
-  ],
-};
-
-const RECIPIENT_STATS = {
-  total_meals: 3820,
-  total_claims: 47,
-  top_donors: ['Royal Banquet', 'Bakers Street', 'TechCorp Cafeteria'],
-  monthly: [
-    { month: 'Jan', meals: 400 },
-    { month: 'Feb', meals: 620 },
-    { month: 'Mar', meals: 720 },
-    { month: 'Apr', meals: 580 },
-    { month: 'May', meals: 810 },
-    { month: 'Jun', meals: 690 },
-  ],
-};
+import { useImpactSummary } from '../../api/impact';
+import { Loader2 } from 'lucide-react';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -58,7 +21,23 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function Impact() {
   const user = useAuthStore(state => state.user);
   const isdonor = user?.role === 'donor';
-  const stats = isdonor ? DONOR_STATS : RECIPIENT_STATS;
+  const { data: realStats, isLoading } = useImpactSummary();
+  
+  // Map real backend data to the component's expected structure, falling back to safe defaults
+  const stats = {
+    total_meals: realStats?.total_meals || 0,
+    total_relays: realStats?.total_relays || 0,
+    total_claims: realStats?.total_claims || 0,
+    co2_kg_saved: realStats?.co2_kg_saved || 0,
+    shelters_reached: realStats?.shelters_reached || 0,
+    monthly: realStats?.monthly || [
+      { month: 'Jan', meals: 0 }, { month: 'Feb', meals: 0 }, { month: 'Mar', meals: 0 },
+      { month: 'Apr', meals: 0 }, { month: 'May', meals: 0 }, { month: 'Jun', meals: 0 }
+    ],
+    top_partners: realStats?.top_partners || [],
+    top_donors: realStats?.top_donors || [],
+    badges: user?.badges || []
+  };
   const titleRef = useRef(null);
 
   useEffect(() => {
