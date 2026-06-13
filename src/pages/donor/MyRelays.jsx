@@ -1,60 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Clock, CheckCircle, XCircle, Trash2, AlertCircle } from 'lucide-react';
+import { Plus, Clock, CheckCircle, XCircle, Trash2, AlertCircle, Loader2 } from 'lucide-react';
 import anime from 'animejs';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import toast from 'react-hot-toast';
-
-// Mock relay data for hackathon demo
-const MOCK_RELAYS = [
-  {
-    id: '1',
-    food_name: 'Buffet Surplus — Dal Makhani & Rice',
-    category: 'Cooked Meals',
-    quantity: { value: 40, unit: 'servings' },
-    status: 'claimed',
-    pickup_window: { start: '2026-06-13T20:00:00Z', end: '2026-06-13T22:00:00Z' },
-    created_at: '2026-06-13T18:30:00Z',
-    claimed_by_org: 'Hope Shelter',
-    is_vegetarian: 'true',
-  },
-  {
-    id: '2',
-    food_name: 'Assorted Pastries & Bread',
-    category: 'Bakery',
-    quantity: { value: 15, unit: 'items' },
-    status: 'active',
-    pickup_window: { start: '2026-06-13T21:00:00Z', end: '2026-06-13T22:30:00Z' },
-    created_at: '2026-06-13T19:00:00Z',
-    claimed_by_org: null,
-    is_vegetarian: 'true',
-  },
-  {
-    id: '3',
-    food_name: 'Biryani (Mixed)',
-    category: 'Cooked Meals',
-    quantity: { value: 60, unit: 'servings' },
-    status: 'completed',
-    pickup_window: { start: '2026-06-12T20:00:00Z', end: '2026-06-12T22:00:00Z' },
-    created_at: '2026-06-12T18:00:00Z',
-    claimed_by_org: 'St. Mary\'s Children Home',
-    is_vegetarian: 'mixed',
-  },
-  {
-    id: '4',
-    food_name: 'Fresh Vegetables Box',
-    category: 'Raw Produce',
-    quantity: { value: 8, unit: 'kg' },
-    status: 'cancelled',
-    pickup_window: { start: '2026-06-11T18:00:00Z', end: '2026-06-11T20:00:00Z' },
-    created_at: '2026-06-11T16:00:00Z',
-    claimed_by_org: null,
-    is_vegetarian: 'true',
-  },
-];
+import { useMyRelays, useCancelRelay } from '../../api/relays';
 
 const statusConfig = {
   active:    { label: 'Active',    variant: 'active',    icon: Clock },
@@ -64,17 +17,33 @@ const statusConfig = {
 };
 
 const categoryEmoji = {
-  'Cooked Meals': '🍛',
-  'Bakery': '🥐',
-  'Raw Produce': '🥬',
-  'Packaged': '📦',
-  'Other': '🍱',
+  'cooked_meals': '🍛',
+  'bakery': '🥐',
+  'raw_produce': '🥬',
+  'packaged': '📦',
+  'other': '🍱',
+};
+
+const vegLabel = {
+  'veg': 'Veg',
+  'non_veg': 'Non-Veg',
+  'mixed': 'Mixed'
+};
+
+const vegVariant = {
+  'veg': 'veg',
+  'non_veg': 'nonveg',
+  'mixed': 'mixed'
 };
 
 export default function MyRelays() {
-  const [relays, setRelays] = useState(MOCK_RELAYS);
   const [filter, setFilter] = useState('all');
   const [cancelTarget, setCancelTarget] = useState(null);
+  
+  const { data, isLoading } = useMyRelays();
+  const cancelRelay = useCancelRelay();
+  
+  const relays = data?.relays || [];
 
   useEffect(() => {
     anime({
@@ -85,14 +54,20 @@ export default function MyRelays() {
       easing: 'easeOutExpo',
       duration: 600,
     });
-  }, [filter]);
+  }, [filter, isLoading]);
 
   const filtered = filter === 'all' ? relays : relays.filter(r => r.status === filter);
 
   const handleCancel = (relay) => {
-    setRelays(prev => prev.map(r => r.id === relay.id ? { ...r, status: 'cancelled' } : r));
-    setCancelTarget(null);
-    toast.success('Relay cancelled successfully.');
+    cancelRelay.mutate(relay.id, {
+      onSuccess: () => {
+        setCancelTarget(null);
+        toast.success('Relay cancelled successfully.');
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.detail || 'Failed to cancel relay');
+      }
+    });
   };
 
   const formatWindow = (start, end) => {
@@ -147,7 +122,12 @@ export default function MyRelays() {
       </div>
 
       {/* Relay List */}
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <Card className="p-12 text-center border-steel/20" hover={false}>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-azure" />
+          <p className="text-steel font-body">Loading your relays...</p>
+        </Card>
+      ) : filtered.length === 0 ? (
         <Card className="p-12 text-center border-steel/20" hover={false}>
           <div className="text-5xl mb-4">🍳</div>
           <h3 className="text-xl font-bold text-white font-display mb-2">Nothing here yet</h3>
@@ -179,17 +159,14 @@ export default function MyRelays() {
                       <StatusIcon className="w-3 h-3" />
                       {cfg.label}
                     </Badge>
-                    <Badge variant={relay.is_vegetarian === 'true' ? 'veg' : relay.is_vegetarian === 'false' ? 'nonveg' : 'mixed'} size="xs">
-                      {relay.is_vegetarian === 'true' ? 'Veg' : relay.is_vegetarian === 'false' ? 'Non-Veg' : 'Mixed'}
+                    <Badge variant={vegVariant[relay.is_vegetarian] || 'mixed'} size="xs">
+                      {vegLabel[relay.is_vegetarian] || 'Mixed'}
                     </Badge>
                   </div>
                   <h3 className="text-white font-display font-bold text-lg leading-tight truncate">{relay.food_name}</h3>
                   <div className="flex flex-wrap gap-4 mt-1 text-sm text-steel font-body">
                     <span>🍽️ {relay.quantity.value} {relay.quantity.unit}</span>
                     <span>⏱️ {formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
-                    {relay.claimed_by_org && (
-                      <span className="text-azure">🤝 {relay.claimed_by_org}</span>
-                    )}
                   </div>
                 </div>
 
@@ -200,6 +177,7 @@ export default function MyRelays() {
                     size="sm"
                     icon={Trash2}
                     onClick={() => setCancelTarget(relay)}
+                    disabled={cancelRelay.isPending}
                   >
                     Cancel
                   </Button>
@@ -222,7 +200,9 @@ export default function MyRelays() {
         </p>
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={() => setCancelTarget(null)}>Keep it Active</Button>
-          <Button variant="danger" onClick={() => handleCancel(cancelTarget)}>Yes, Cancel</Button>
+          <Button variant="danger" onClick={() => handleCancel(cancelTarget)} disabled={cancelRelay.isPending}>
+            {cancelRelay.isPending ? 'Cancelling...' : 'Yes, Cancel'}
+          </Button>
         </div>
       </Modal>
     </div>

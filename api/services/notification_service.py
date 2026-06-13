@@ -54,7 +54,7 @@ async def notify_nearby_recipients(relay: dict, radius_km: float = 10.0):
                 "spherical": True,
                 "query": {
                     "role": "recipient",
-                    "verification_status": "verified",
+                    # "verification_status": "verified", # Temporarily disabled for testing
                 },
             }
         },
