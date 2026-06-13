@@ -53,6 +53,14 @@ class UserCreate(BaseModel):
     role: Role = Field(..., description="donor or recipient")
 
 
+class UserCreateFromFrontend(BaseModel):
+    """Registration when the frontend already created the Supabase user."""
+    supabase_uid: str = Field(..., min_length=1)
+    email: EmailStr
+    role: Role = Field(..., description="donor or recipient")
+    org_name: Optional[str] = Field(None, max_length=200)
+
+
 class ProfileComplete(BaseModel):
     """Step 2: fill in org details + location after Supabase signup."""
     org_name: str = Field(..., min_length=2, max_length=200)

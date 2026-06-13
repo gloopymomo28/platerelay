@@ -53,9 +53,16 @@ const useAuthStore = create((set, get) => ({
       const user = await getMe();
       set({ user });
       return user;
-    } catch {
-      // If backend isn't up, create a minimal user object from session
-      const minimalUser = { email, role: 'donor', org_name: email.split('@')[0] };
+    } catch (backendErr) {
+      // Backend couldn't find the user doc — don't silently default to 'donor'.
+      // Instead, try to use any Supabase user metadata we have.
+      console.error('Failed to fetch user profile from backend:', backendErr);
+      const minimalUser = {
+        email,
+        role: null,            // null = unknown, the UI should handle this gracefully
+        org_name: email.split('@')[0],
+        _backendUnavailable: true,
+      };
       set({ user: minimalUser });
       return minimalUser;
     }

@@ -26,9 +26,9 @@ export default function Login() {
     try {
       const user = await login(data.email, data.password);
       toast.success("Welcome back, food warrior! 🍽️");
-      if (user?.role === 'donor') navigate('/donor/dashboard');
-      else if (user?.role === 'recipient') navigate('/recipient/dashboard');
-      else navigate('/donor/dashboard');
+      if (user?.role === 'recipient') navigate('/recipient/dashboard');
+      else if (user?.role === 'donor') navigate('/donor/dashboard');
+      else navigate('/');  // unknown role — stay on landing page
     } catch (error) {
       toast.error(error.message || "Failed to login. Please check your credentials.");
     } finally {

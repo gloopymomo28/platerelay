@@ -1,23 +1,32 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin, Loader2 } from 'lucide-react';
 import anime from 'animejs';
 import useAuthStore from '../../store/authStore';
-
-const nearbyRelays = [
-  { id: 1, food_name: 'Buffet Surplus — Rice & Dal', quantity: 40, unit: 'servings', distance: '2.4 km', expires_in: '1h 20m', donor: 'Royal Banquet', urgency: 'low', emoji: '🍛' },
-  { id: 2, food_name: 'Assorted Pastries', quantity: 15, unit: 'items', distance: '4.1 km', expires_in: '45m', donor: 'Bakers Street', urgency: 'high', emoji: '🥐' },
-];
-
-const stats = [
-  { label: 'Meals Received', value: '420', icon: '🍽️', color: '#20A4F3', sub: 'all-time' },
-  { label: 'Claims This Month', value: '2', icon: '✅', color: '#59F8E8', sub: '1 more left (free)' },
-  { label: 'Plan', value: 'Free', icon: '⭐', color: '#F4A22D', sub: 'Upgrade to Saathi' },
-  { label: 'Partner Donors', value: '5', icon: '🏢', color: '#4ade80', sub: 'active' },
-];
+import { useImpactSummary } from '../../api/impact';
 
 export default function RecipientDashboard() {
   const user = useAuthStore(state => state.user);
+
+  // ── Fetch real data from API ──
+  const { data: impactData, isLoading } = useImpactSummary();
+
+  const totalMeals = impactData?.total_meals ?? 0;
+  const totalClaims = impactData?.total_claims ?? 0;
+  const partnerDonors = impactData?.top_donors?.length ?? 0;
+
+  const subscription = user?.subscription || {};
+  const planName = (subscription.plan || 'free').charAt(0).toUpperCase() + (subscription.plan || 'free').slice(1);
+  const claimsThisMonth = user?.claims_this_month ?? 0;
+  const claimLimit = planName === 'Free' ? 3 : planName === 'Saathi' ? 30 : 999;
+  const claimsRemaining = Math.max(0, claimLimit - claimsThisMonth);
+
+  const stats = [
+    { label: 'Meals Received', value: totalMeals.toLocaleString(), icon: '🍽️', color: '#20A4F3', sub: 'all-time' },
+    { label: 'Claims This Month', value: claimsThisMonth.toString(), icon: '✅', color: '#59F8E8', sub: `${claimsRemaining} remaining` },
+    { label: 'Plan', value: planName, icon: '⭐', color: '#F4A22D', sub: planName === 'Free' ? 'Upgrade to Saathi' : 'Active' },
+    { label: 'Partner Donors', value: partnerDonors.toString(), icon: '🏢', color: '#4ade80', sub: 'active' },
+  ];
 
   useEffect(() => {
     anime({
@@ -28,7 +37,7 @@ export default function RecipientDashboard() {
       easing: 'easeOutExpo',
       duration: 700,
     });
-  }, []);
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #03191E 0%, #041f26 100%)' }}>
@@ -43,7 +52,7 @@ export default function RecipientDashboard() {
             <div>
               <p className="text-sm font-body mb-2" style={{ color: '#F4A22D' }}>Welcome back,</p>
               <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-                {user?.org_name || 'Shelter'} 🤝
+                {user?.org_name || 'Shelter'}
               </h1>
               <p className="font-body" style={{ color: '#C1CFDA' }}>Good food is on its way to you.</p>
             </div>
@@ -64,11 +73,11 @@ export default function RecipientDashboard() {
               style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)' }}>
               <div className="text-2xl mb-3">{stat.icon}</div>
               <div className="text-2xl md:text-3xl font-bold font-display mb-0.5" style={{ color: stat.color }}>
-                {stat.value}
+                {isLoading ? <Loader2 className="w-6 h-6 animate-spin inline" /> : stat.value}
               </div>
               <div className="text-sm font-body text-white mb-1">{stat.label}</div>
               <div className="text-xs font-body" style={{ color: 'rgba(193,207,218,0.4)' }}>
-                {stat.label === 'Plan' ? (
+                {stat.label === 'Plan' && planName === 'Free' ? (
                   <Link to="/recipient/upgrade" style={{ color: '#20A4F3' }} className="hover:underline">
                     {stat.sub} →
                   </Link>
@@ -78,75 +87,54 @@ export default function RecipientDashboard() {
           ))}
         </div>
 
-        {/* ── Free tier notice ── */}
+        {/* ── Plan / Claim notice ── */}
         <div className="rdash-item opacity-0 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ background: 'rgba(244,162,45,0.06)', border: '1px solid rgba(244,162,45,0.2)' }}>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
               style={{ background: 'rgba(244,162,45,0.15)' }}>⭐</div>
             <div>
-              <div className="font-display font-bold text-white text-sm">You have 1 claim remaining this month</div>
+              <div className="font-display font-bold text-white text-sm">
+                {claimsRemaining > 0
+                  ? `You have ${claimsRemaining} claim${claimsRemaining !== 1 ? 's' : ''} remaining this month`
+                  : 'You have used all your claims this month'}
+              </div>
               <div className="text-xs font-body mt-0.5" style={{ color: 'rgba(193,207,218,0.6)' }}>
-                Free plan: 3 claims/month · Resets July 1st
+                {planName} plan: {claimLimit} claims/month
               </div>
             </div>
           </div>
-          <Link to="/recipient/upgrade">
-            <button className="px-5 py-2.5 rounded-xl font-display font-bold text-sm flex-shrink-0 transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #F4A22D, #f59e0b)', color: '#03191E' }}>
-              Upgrade to Saathi →
-            </button>
-          </Link>
+          {planName === 'Free' && (
+            <Link to="/recipient/upgrade">
+              <button className="px-5 py-2.5 rounded-xl font-display font-bold text-sm flex-shrink-0 transition-all hover:scale-105"
+                style={{ background: 'linear-gradient(135deg, #F4A22D, #f59e0b)', color: '#03191E' }}>
+                Upgrade to Saathi →
+              </button>
+            </Link>
+          )}
         </div>
 
-        {/* ── Nearby Right Now ── */}
+        {/* ── Browse CTA ── */}
         <div className="rdash-item opacity-0">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-display font-bold text-white">Nearby Right Now</h2>
+            <h2 className="text-2xl font-display font-bold text-white">Find Food Nearby</h2>
             <Link to="/recipient/browse" className="flex items-center gap-1 text-sm font-body transition-colors hover:text-white"
               style={{ color: '#20A4F3' }}>
               View map <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {nearbyRelays.map(relay => (
-              <div key={relay.id} className="rounded-2xl overflow-hidden flex flex-col sm:flex-row group cursor-pointer transition-all hover:-translate-y-1"
-                style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(32,164,243,0.3)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(193,207,218,0.08)'}
-              >
-                {/* Photo placeholder */}
-                <div className="w-full sm:w-40 h-40 sm:h-auto flex items-center justify-center text-5xl flex-shrink-0"
-                  style={{ background: 'rgba(193,207,218,0.06)', borderRight: '1px solid rgba(193,207,218,0.08)' }}>
-                  {relay.emoji}
-                </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-bold font-display px-2 py-1 rounded-full"
-                      style={{ background: 'rgba(89,248,232,0.15)', color: '#59F8E8' }}>● ACTIVE</span>
-                    <span className="text-xs font-bold flex items-center gap-1"
-                      style={{ color: relay.urgency === 'high' ? '#f87171' : '#59F8E8' }}>
-                      ⏱ {relay.expires_in}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white font-display leading-tight mb-1">{relay.food_name}</h3>
-                  <p className="text-xs font-body mb-3" style={{ color: 'rgba(193,207,218,0.5)' }}>From: {relay.donor}</p>
-                  <div className="mt-auto flex justify-between items-end">
-                    <div>
-                      <div className="text-lg font-bold text-white">{relay.quantity} <span className="text-sm font-normal" style={{ color: 'rgba(193,207,218,0.6)' }}>{relay.unit}</span></div>
-                      <div className="text-xs flex items-center gap-1 mt-0.5" style={{ color: 'rgba(193,207,218,0.5)' }}>
-                        <MapPin className="w-3 h-3" /> {relay.distance} away
-                      </div>
-                    </div>
-                    <button className="px-4 py-2 rounded-xl font-display font-bold text-xs transition-all hover:scale-105"
-                      style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
-                      Claim Food
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-2xl p-16 text-center"
+            style={{ background: 'rgba(193,207,218,0.03)', border: '1px dashed rgba(193,207,218,0.15)' }}>
+            <div className="text-5xl mb-4">🗺️</div>
+            <h3 className="text-xl font-bold text-white font-display mb-2">Browse available food near you</h3>
+            <p className="font-body mb-6" style={{ color: '#C1CFDA' }}>Check the food map to see what's available from nearby donors.</p>
+            <Link to="/recipient/browse">
+              <button className="px-6 py-3 rounded-xl font-display font-bold text-sm transition-all hover:opacity-80"
+                style={{ border: '1px solid rgba(244,162,45,0.4)', color: '#F4A22D' }}>
+                Open Food Map
+              </button>
+            </Link>
           </div>
         </div>
       </div>

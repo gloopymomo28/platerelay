@@ -10,7 +10,7 @@ from bson import ObjectId
 from auth.supabase import get_supabase_client, get_supabase_admin
 from auth.dependencies import get_current_user
 from database import get_db
-from models.user import UserCreate, ProfileComplete, UserUpdate, UserResponse
+from models.user import UserCreate, UserCreateFromFrontend, ProfileComplete, UserUpdate, UserResponse
 from models.common import DocType, VerificationStatus
 from services.cloudinary_service import upload_verification_doc
 from services.email_service import send_docs_received_email
@@ -30,44 +30,31 @@ def _serialize_user(user: dict) -> dict:
 # POST /api/auth/register
 # ─────────────────────────────────────────────────────────────
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(payload: UserCreate):
+async def register(payload: UserCreateFromFrontend):
     """
-    Register a new user via Supabase Auth, then create a stub
-    MongoDB document. The user still needs to complete their profile.
+    Register a new user. The frontend has already created the Supabase auth
+    user via signUp(), so we receive the supabase_uid directly and just
+    create the MongoDB user document.
     """
-    try:
-        supabase = get_supabase_admin()
-        auth_response = supabase.auth.admin.create_user({
-            "email": payload.email,
-            "password": payload.password,
-            "email_confirm": False,
-        })
+    db = get_db()
 
-        if not auth_response or not auth_response.user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Failed to create Supabase user. Email might already exist.",
-            )
-
-        supabase_uid = auth_response.user.id
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Registration failed: {str(e)}",
-        )
+    # ── Guard: don't create duplicate MongoDB docs ──
+    existing = await db.users.find_one({"supabase_uid": payload.supabase_uid})
+    if existing:
+        return {
+            "message": "User already registered.",
+            "supabase_uid": payload.supabase_uid,
+        }
 
     # ── Create MongoDB user stub ──
-    db = get_db()
     now = datetime.utcnow()
 
     user_doc = {
-        "supabase_uid": supabase_uid,
+        "supabase_uid": payload.supabase_uid,
         "role": payload.role.value,
         "email": payload.email,
+        "org_name": payload.org_name or payload.email.split("@")[0],
         "phone": None,
-        "org_name": None,
         "contact_name": None,
         "address": None,
         "location": None,
@@ -84,6 +71,9 @@ async def register(payload: UserCreate):
         "claims_this_month": 0,
         "claims_month_reset": now,
         "badges": [],
+        "total_relays": 0,
+        "total_meals": 0,
+        "co2_saved": 0.0,
         "created_at": now,
         "updated_at": now,
     }
@@ -91,8 +81,8 @@ async def register(payload: UserCreate):
     await db.users.insert_one(user_doc)
 
     return {
-        "message": "Registration successful! Check your email to verify. 📧",
-        "supabase_uid": supabase_uid,
+        "message": "Registration successful! Check your email to verify.",
+        "supabase_uid": payload.supabase_uid,
     }
 
 
