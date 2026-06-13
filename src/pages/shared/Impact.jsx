@@ -6,6 +6,7 @@ import useAuthStore from '../../store/authStore';
 import { useImpactSummary } from '../../api/impact';
 import { Loader2 } from 'lucide-react';
 import { FloatingBackground } from '../../components/ui/FloatingBackground';
+import { LiquidGlassCard } from '../../components/ui/liquid-glass-card';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -85,41 +86,41 @@ export default function Impact() {
 
       {/* Hero Stats */}
       <div className="impact-item grid grid-cols-2 md:grid-cols-4 gap-4" style={{ opacity: 0 }}>
-        <Card className="text-center p-6 bg-gradient-to-br from-azure/20 to-midnight border-azure/30" hover={false}>
+        <LiquidGlassCard className="text-center p-6 bg-gradient-to-br from-azure/20 to-midnight border-azure/30" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <div className="text-4xl font-bold text-azure font-display">
             {stats.total_meals.toLocaleString()}
           </div>
           <div className="text-steel text-sm mt-1 font-body">Total Meals {isdonor ? 'Donated' : 'Received'}</div>
-        </Card>
+        </LiquidGlassCard>
 
-        <Card className="text-center p-6 bg-gradient-to-br from-cyan/20 to-midnight border-cyan/30" hover={false}>
+        <LiquidGlassCard className="text-center p-6 bg-gradient-to-br from-cyan/20 to-midnight border-cyan/30" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <div className="text-4xl font-bold text-cyan font-display">
             {isdonor ? stats.total_relays : stats.total_claims}
           </div>
           <div className="text-steel text-sm mt-1 font-body">Relays {isdonor ? 'Posted' : 'Claimed'}</div>
-        </Card>
+        </LiquidGlassCard>
 
         {isdonor && (
           <>
-            <Card className="text-center p-6 bg-gradient-to-br from-green-500/20 to-midnight border-green-500/30" hover={false}>
+            <LiquidGlassCard className="text-center p-6 bg-gradient-to-br from-green-500/20 to-midnight border-green-500/30" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
               <div className="text-4xl font-bold text-green-400 font-display">
                 {stats.co2_kg_saved}
               </div>
               <div className="text-steel text-sm mt-1 font-body">kg CO₂ Saved</div>
-            </Card>
-            <Card className="text-center p-6 bg-gradient-to-br from-saffron/20 to-midnight border-saffron/30" hover={false}>
+            </LiquidGlassCard>
+            <LiquidGlassCard className="text-center p-6 bg-gradient-to-br from-saffron/20 to-midnight border-saffron/30" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
               <div className="text-4xl font-bold text-saffron font-display">
                 {stats.shelters_reached}
               </div>
               <div className="text-steel text-sm mt-1 font-body">Shelters Reached</div>
-            </Card>
+            </LiquidGlassCard>
           </>
         )}
       </div>
 
       {/* Monthly Chart */}
       <div className="impact-item" style={{ opacity: 0 }}>
-        <Card className="p-6 border-steel/20" hover={false}>
+        <LiquidGlassCard className="p-6 border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <h2 className="text-xl font-display font-bold text-white mb-6">Monthly Meals Trend</h2>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={stats.monthly} barCategoryGap="30%">
@@ -134,13 +135,13 @@ export default function Impact() {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </Card>
+        </LiquidGlassCard>
       </div>
 
       {/* Top Partners & Badges */}
       <div className="impact-item grid grid-cols-1 md:grid-cols-2 gap-6" style={{ opacity: 0 }}>
         {/* Partners */}
-        <Card className="p-6 border-steel/20" hover={false}>
+        <LiquidGlassCard className="p-6 border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <h2 className="text-xl font-display font-bold text-white mb-4">
             {isdonor ? '🤝 Top Recipient Partners' : '🏢 Top Donor Partners'}
           </h2>
@@ -154,11 +155,11 @@ export default function Impact() {
               </div>
             ))}
           </div>
-        </Card>
+        </LiquidGlassCard>
 
         {/* Badges (donor only) */}
         {isdonor && (
-          <Card className="p-6 border-steel/20" hover={false}>
+          <LiquidGlassCard className="p-6 border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
             <h2 className="text-xl font-display font-bold text-white mb-4">🏆 Badges Earned</h2>
             <div className="grid grid-cols-3 gap-3">
               {stats.badges.map(badge => (
@@ -178,14 +179,14 @@ export default function Impact() {
                 </div>
               ))}
             </div>
-          </Card>
+          </LiquidGlassCard>
         )}
       </div>
 
       {/* CO2 Impact Callout (donor) */}
       {isdonor && (
         <div className="impact-item" style={{ opacity: 0 }}>
-          <Card className="p-8 border-green-500/20 bg-gradient-to-r from-green-500/10 to-cyan/5" hover={false}>
+          <LiquidGlassCard className="p-8 border-green-500/20 bg-gradient-to-r from-green-500/10 to-cyan/5" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
             <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
               <div className="text-6xl">🌱</div>
               <div>
@@ -198,7 +199,7 @@ export default function Impact() {
                 </p>
               </div>
             </div>
-          </Card>
+          </LiquidGlassCard>
         </div>
       )}
       </div>

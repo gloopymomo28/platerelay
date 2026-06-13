@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
 import { useCreateRelay } from '../../api/relays';
 import { FloatingBackground } from '../../components/ui/FloatingBackground';
+import { LiquidGlassCard } from '../../components/ui/liquid-glass-card';
 
 export default function PostRelay() {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ export default function PostRelay() {
           <p className="text-steel font-body">Got food? Be someone's hero tonight.</p>
         </div>
 
-      <Card className="p-8 border-steel/20 bg-midnight/50 backdrop-blur-md">
+      <LiquidGlassCard className="p-8 border-steel/20 bg-midnight/50">
         {step === 1 && (
           <div className="space-y-6">
             <div className="bg-crimson/10 border border-crimson rounded-lg p-6">
@@ -253,7 +254,7 @@ export default function PostRelay() {
             </div>
           </form>
         )}
-      </Card>
+      </LiquidGlassCard>
       </div>
     </div>
   );

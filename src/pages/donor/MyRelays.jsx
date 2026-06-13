@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useMyRelays, useClaimedRelays, useCancelRelay } from '../../api/relays';
 import useAuthStore from '../../store/authStore';
 import { FloatingBackground } from '../../components/ui/FloatingBackground';
+import { LiquidGlassCard } from '../../components/ui/liquid-glass-card';
 
 const statusConfig = {
   active:    { label: 'Active',    variant: 'active',    icon: Clock },
@@ -79,8 +80,6 @@ export default function MyRelays() {
   };
 
   const formatWindow = (start, end) => {
-    // Backend naive datetimes are returned without 'Z', which causes the browser to parse them as local time instead of UTC.
-    // By appending 'Z', we force the browser to treat the string as UTC, which is correct.
     const safeStart = start.endsWith('Z') ? start : `${start}Z`;
     const safeEnd = end.endsWith('Z') ? end : `${end}Z`;
     const s = new Date(safeStart);
@@ -141,17 +140,17 @@ export default function MyRelays() {
 
       {/* Relay List */}
       {isLoading ? (
-        <Card className="p-12 text-center border-steel/20" hover={false}>
+        <LiquidGlassCard className="p-12 text-center border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-azure" />
           <p className="text-steel font-body">Loading your relays...</p>
-        </Card>
+        </LiquidGlassCard>
       ) : filtered.length === 0 ? (
-        <Card className="p-12 text-center border-steel/20" hover={false}>
+        <LiquidGlassCard className="p-12 text-center border-steel/20" blurIntensity="md" shadowIntensity="sm" glowIntensity="sm">
           <div className="text-5xl mb-4">🍳</div>
           <h3 className="text-xl font-bold text-white font-display mb-2">Nothing here yet</h3>
           <p className="text-steel font-body mb-6">No relays match this filter. Try another tab or post a new relay.</p>
           <Link to="/donor/post"><Button variant="ghost">Post a Relay</Button></Link>
-        </Card>
+        </LiquidGlassCard>
       ) : (
         <div className="space-y-3">
           {filtered.map(relay => {
@@ -160,10 +159,11 @@ export default function MyRelays() {
             const canCancel = relay.status === 'active';
 
             return (
-              <div
+              <LiquidGlassCard
                 key={relay.id}
-                className="relay-row glass-card p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:border-azure/30 transition-all"
+                className="relay-row p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:border-azure/30 transition-all"
                 style={{ opacity: 0 }}
+                blurIntensity="md" shadowIntensity="sm" glowIntensity="sm"
               >
                 {/* Photo */}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-steel-10 flex-shrink-0 overflow-hidden relative">
@@ -210,7 +210,7 @@ export default function MyRelays() {
                     Cancel
                   </Button>
                 )}
-              </div>
+              </LiquidGlassCard>
             );
           })}
         </div>

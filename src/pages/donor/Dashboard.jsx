@@ -7,6 +7,8 @@ import { useMyRelays } from '../../api/relays';
 import { useImpactSummary } from '../../api/impact';
 import { FloatingBackground } from '../../components/ui/FloatingBackground';
 
+import { LiquidGlassCard } from '../../components/ui/liquid-glass-card';
+
 export default function DonorDashboard() {
   const user = useAuthStore(state => state.user);
 
@@ -65,7 +67,7 @@ export default function DonorDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 relative z-10">
 
         {/* ── Welcome Banner ── */}
-        <div className="dash-item opacity-0 relative rounded-3xl overflow-hidden p-8 md:p-10"
+        <LiquidGlassCard className="dash-item opacity-0 relative p-8 md:p-10" blurIntensity="lg" shadowIntensity="sm" glowIntensity="sm" borderRadius="24px"
           style={{ background: 'linear-gradient(135deg, rgba(32,164,243,0.15) 0%, rgba(89,248,232,0.08) 50%, rgba(3,25,30,0) 100%)', border: '1px solid rgba(32,164,243,0.2)' }}>
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none opacity-10"
             style={{ background: 'radial-gradient(circle, #59F8E8, transparent)', transform: 'translate(30%, -30%)' }} />
@@ -85,10 +87,10 @@ export default function DonorDashboard() {
               </button>
             </Link>
           </div>
-        </div>
+        </LiquidGlassCard>
 
         {/* ── Safety Warning ── */}
-        <div className="dash-item opacity-0 rounded-2xl p-4 flex items-start gap-4"
+        <LiquidGlassCard className="dash-item opacity-0 p-4 flex items-start gap-4" blurIntensity="md" shadowIntensity="sm" glowIntensity="none" borderRadius="16px"
           style={{ background: 'rgba(148,28,47,0.08)', border: '1px solid rgba(148,28,47,0.25)' }}>
           <span className="text-xl flex-shrink-0 mt-0.5">🌡️</span>
           <div>
@@ -97,12 +99,12 @@ export default function DonorDashboard() {
               Post only food prepared today, stored safely, and that you'd serve to a paying guest. Poor quality endangers vulnerable people.
             </p>
           </div>
-        </div>
+        </LiquidGlassCard>
 
         {/* ── Stats Grid ── */}
         <div className="dash-item opacity-0 grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map(stat => (
-            <div key={stat.label} className="rounded-2xl p-5 transition-all hover:-translate-y-1"
+            <LiquidGlassCard key={stat.label} className="p-5 transition-all hover:-translate-y-1" blurIntensity="sm" shadowIntensity="xs" glowIntensity="none" borderRadius="16px"
               style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)' }}>
               <div className="text-2xl mb-3">{stat.icon}</div>
               <div className="text-2xl md:text-3xl font-bold font-display mb-0.5" style={{ color: stat.color }}>
@@ -110,7 +112,7 @@ export default function DonorDashboard() {
               </div>
               <div className="text-sm font-body text-white mb-1">{stat.label}</div>
               <div className="text-xs font-body" style={{ color: 'rgba(193,207,218,0.4)' }}>{stat.sub}</div>
-            </div>
+            </LiquidGlassCard>
           ))}
         </div>
 
@@ -125,12 +127,12 @@ export default function DonorDashboard() {
           </div>
 
           {relaysLoading ? (
-            <div className="rounded-2xl p-16 text-center" style={{ background: 'rgba(193,207,218,0.03)', border: '1px dashed rgba(193,207,218,0.15)' }}>
+            <LiquidGlassCard className="p-16 text-center" blurIntensity="md" shadowIntensity="sm" glowIntensity="none" borderRadius="16px" style={{ background: 'rgba(193,207,218,0.03)', border: '1px dashed rgba(193,207,218,0.15)' }}>
               <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: '#20A4F3' }} />
               <p className="font-body" style={{ color: '#C1CFDA' }}>Loading your relays...</p>
-            </div>
+            </LiquidGlassCard>
           ) : activeRelays.length === 0 ? (
-            <div className="rounded-2xl p-16 text-center"
+            <LiquidGlassCard className="p-16 text-center" blurIntensity="md" shadowIntensity="sm" glowIntensity="none" borderRadius="16px"
               style={{ background: 'rgba(193,207,218,0.03)', border: '1px dashed rgba(193,207,218,0.15)' }}>
               <div className="text-5xl mb-4">🍳</div>
               <h3 className="text-xl font-bold text-white font-display mb-2">No active relays yet</h3>
@@ -141,11 +143,11 @@ export default function DonorDashboard() {
                   Post a Relay
                 </button>
               </Link>
-            </div>
+            </LiquidGlassCard>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {activeRelays.map(relay => (
-                <div key={relay.id || relay._id} className="rounded-2xl p-5 group transition-all hover:-translate-y-1 cursor-pointer"
+                <LiquidGlassCard key={relay.id || relay._id} className="p-5 group transition-all hover:-translate-y-1 cursor-pointer" blurIntensity="sm" shadowIntensity="xs" glowIntensity="none" borderRadius="16px"
                   style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(32,164,243,0.3)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(193,207,218,0.08)'}
@@ -168,7 +170,7 @@ export default function DonorDashboard() {
                     style={{ borderColor: 'rgba(193,207,218,0.08)', color: 'rgba(193,207,218,0.4)' }}>
                     <span className="group-hover:text-azure transition-colors">View details →</span>
                   </div>
-                </div>
+                </LiquidGlassCard>
               ))}
             </div>
           )}
@@ -179,14 +181,15 @@ export default function DonorDashboard() {
           <h2 className="text-2xl font-display font-bold text-white mb-4">Impact Badges</h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
             {allBadges.map(badge => (
-              <div key={badge.title} title={badge.desc}
-                className={`flex-shrink-0 text-center p-5 rounded-2xl transition-all ${badge.earned ? 'hover:-translate-y-1' : 'opacity-30 grayscale'}`}
+              <LiquidGlassCard key={badge.title} title={badge.desc}
+                className={`flex-shrink-0 text-center p-5 transition-all ${badge.earned ? 'hover:-translate-y-1' : 'opacity-30 grayscale'}`}
+                blurIntensity="sm" shadowIntensity="xs" glowIntensity="none" borderRadius="16px"
                 style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)', minWidth: '110px' }}>
                 <div className="text-4xl mb-2" style={badge.earned ? { filter: `drop-shadow(0 0 10px ${badge.glow})` } : {}}>
                   {badge.emoji}
                 </div>
                 <div className="text-xs font-bold font-display text-white">{badge.title}</div>
-              </div>
+              </LiquidGlassCard>
             ))}
           </div>
         </div>
