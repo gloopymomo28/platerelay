@@ -25,11 +25,11 @@ export default function Impact() {
   
   // Map real backend data to the component's expected structure, falling back to safe defaults
   const stats = {
-    total_meals: realStats?.total_meals || 0,
-    total_relays: realStats?.total_relays || 0,
-    total_claims: realStats?.total_claims || 0,
+    total_meals: realStats?.total_meals_donated || realStats?.total_meals_received || 0,
+    total_relays: realStats?.total_relays_posted || realStats?.total_relays_claimed || 0,
+    total_claims: realStats?.total_relays_claimed || 0, // Specifically for recipients
     co2_kg_saved: realStats?.co2_kg_saved || 0,
-    shelters_reached: realStats?.shelters_reached || 0,
+    shelters_reached: realStats?.unique_recipients || realStats?.unique_donors || 0,
     monthly: realStats?.monthly || [
       { month: 'Jan', meals: 0 }, { month: 'Feb', meals: 0 }, { month: 'Mar', meals: 0 },
       { month: 'Apr', meals: 0 }, { month: 'May', meals: 0 }, { month: 'Jun', meals: 0 }

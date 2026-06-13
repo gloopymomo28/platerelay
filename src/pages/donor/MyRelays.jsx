@@ -7,7 +7,8 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import toast from 'react-hot-toast';
-import { useMyRelays, useCancelRelay } from '../../api/relays';
+import { useMyRelays, useClaimedRelays, useCancelRelay } from '../../api/relays';
+import useAuthStore from '../../store/authStore';
 
 const statusConfig = {
   active:    { label: 'Active',    variant: 'active',    icon: Clock },
@@ -40,7 +41,13 @@ export default function MyRelays() {
   const [filter, setFilter] = useState('all');
   const [cancelTarget, setCancelTarget] = useState(null);
   
-  const { data, isLoading } = useMyRelays();
+  const user = useAuthStore(state => state.user);
+  const isDonor = user?.role === 'donor';
+
+  const myRelaysQuery = useMyRelays();
+  const claimedRelaysQuery = useClaimedRelays();
+  
+  const { data, isLoading } = isDonor ? myRelaysQuery : claimedRelaysQuery;
   const cancelRelay = useCancelRelay();
   
   const relays = data?.relays || [];
@@ -95,12 +102,16 @@ export default function MyRelays() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white">My Relays</h1>
-          <p className="text-steel font-body mt-1">Every meal you post is someone's dinner.</p>
+          <h1 className="text-3xl font-display font-bold text-white">{isDonor ? 'My Relays' : 'My Claims'}</h1>
+          <p className="text-steel font-body mt-1">
+            {isDonor ? "Every meal you post is someone's dinner." : "Keep track of the food you've claimed."}
+          </p>
         </div>
-        <Link to="/donor/post">
-          <Button variant="primary" icon={Plus}>Post New Relay</Button>
-        </Link>
+        {isDonor && (
+          <Link to="/donor/post">
+            <Button variant="primary" icon={Plus}>Post New Relay</Button>
+          </Link>
+        )}
       </div>
 
       {/* Filter Tabs */}
