@@ -31,9 +31,9 @@ export default function BrowseListings() {
   const [radius, setRadius] = useState(10);
   const user = useAuthStore(state => state.user);
   
-  // Get recipient's location
-  const lat = user?.location?.coordinates[1] || 0;
-  const lng = user?.location?.coordinates[0] || 0;
+  // Get recipient's location safely
+  const lat = user?.location?.coordinates?.[1] || 0;
+  const lng = user?.location?.coordinates?.[0] || 0;
 
   const { data, isLoading } = useNearbyRelays(lat, lng, radius);
   const claimRelay = useClaimRelay();
@@ -191,7 +191,7 @@ export default function BrowseListings() {
               </div>
             )
           ) : (
-            <div className="h-full rounded-xl border border-steel/20 bg-midnight flex items-center justify-center overflow-hidden">
+            <div className="h-full min-h-[500px] w-full rounded-xl border border-steel/20 bg-midnight relative overflow-hidden">
               <RelayMap 
                 relays={relays} 
                 centerLat={lat} 
