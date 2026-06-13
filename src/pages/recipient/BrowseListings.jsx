@@ -29,6 +29,15 @@ const formatDistance = (meters) => {
 export default function BrowseListings() {
   const [view, setView] = useState('list'); // 'list' | 'map'
   const [radius, setRadius] = useState(10);
+  const [dietary, setDietary] = useState('all'); // 'all', 'veg', 'no_egg'
+  const [categories, setCategories] = useState({
+    'cooked_meal': true,
+    'bakery': true,
+    'raw_produce': true,
+    'packaged': true,
+    'other': true
+  });
+
   const user = useAuthStore(state => state.user);
   
   // Get recipient's location safely
@@ -39,6 +48,20 @@ export default function BrowseListings() {
   const claimRelay = useClaimRelay();
   
   const relays = data?.relays || [];
+
+  const filteredRelays = relays.filter(relay => {
+    // 1. Dietary Filter
+    if (dietary === 'veg' && relay.is_vegetarian !== 'true') return false;
+    if (dietary === 'no_egg') {
+      const hasEgg = relay.allergens?.some(a => a.toLowerCase().includes('egg'));
+      if (hasEgg) return false;
+    }
+
+    // 2. Category Filter
+    if (!categories[relay.category]) return false;
+
+    return true;
+  });
 
   const handleClaim = (relay) => {
     claimRelay.mutate(relay.id, {
@@ -52,7 +75,8 @@ export default function BrowseListings() {
   };
 
   const getTimeRemaining = (endTimeStr) => {
-    const end = new Date(endTimeStr);
+    const safeEnd = endTimeStr.endsWith('Z') ? endTimeStr : `${endTimeStr}Z`;
+    const end = new Date(safeEnd);
     const now = new Date();
     const diffMs = end - now;
     if (diffMs <= 0) return 'Expired';
@@ -61,6 +85,18 @@ export default function BrowseListings() {
     const hrs = Math.floor(mins / 60);
     const remMins = mins % 60;
     return `${hrs}h ${remMins}m`;
+  };
+
+  const handleCategoryChange = (catKey) => {
+    setCategories(prev => ({ ...prev, [catKey]: !prev[catKey] }));
+  };
+
+  const categoryDisplayMap = {
+    'cooked_meal': 'Cooked Meals',
+    'bakery': 'Bakery',
+    'raw_produce': 'Raw Produce',
+    'packaged': 'Packaged',
+    'other': 'Other'
   };
 
   return (
@@ -89,19 +125,42 @@ export default function BrowseListings() {
           <div>
             <label className="text-sm font-bold text-steel mb-2 block">Dietary</label>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="ghost" className="cursor-pointer border-cyan text-cyan">All</Badge>
-              <Badge variant="ghost" className="cursor-pointer hover:bg-steel/20">Veg Only</Badge>
-              <Badge variant="ghost" className="cursor-pointer hover:bg-steel/20">No Egg</Badge>
+              <Badge 
+                variant="ghost" 
+                className={`cursor-pointer ${dietary === 'all' ? 'border-cyan text-cyan' : 'hover:bg-steel/20 text-steel'}`}
+                onClick={() => setDietary('all')}
+              >
+                All
+              </Badge>
+              <Badge 
+                variant="ghost" 
+                className={`cursor-pointer ${dietary === 'veg' ? 'border-cyan text-cyan' : 'hover:bg-steel/20 text-steel'}`}
+                onClick={() => setDietary('veg')}
+              >
+                Veg Only
+              </Badge>
+              <Badge 
+                variant="ghost" 
+                className={`cursor-pointer ${dietary === 'no_egg' ? 'border-cyan text-cyan' : 'hover:bg-steel/20 text-steel'}`}
+                onClick={() => setDietary('no_egg')}
+              >
+                No Egg
+              </Badge>
             </div>
           </div>
 
           <div>
             <label className="text-sm font-bold text-steel mb-2 block">Category</label>
             <div className="space-y-2">
-              {['Cooked Meals', 'Bakery', 'Raw Produce', 'Packaged'].map(cat => (
-                <label key={cat} className="flex items-center gap-2 text-white text-sm cursor-pointer">
-                  <input type="checkbox" className="accent-azure rounded" defaultChecked />
-                  {cat}
+              {Object.entries(categoryDisplayMap).map(([catKey, label]) => (
+                <label key={catKey} className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="accent-azure rounded" 
+                    checked={categories[catKey]}
+                    onChange={() => handleCategoryChange(catKey)}
+                  />
+                  {label}
                 </label>
               ))}
             </div>
@@ -113,7 +172,7 @@ export default function BrowseListings() {
       <div className="flex-1 flex flex-col h-full">
         {/* Top bar with Map/List toggle */}
         <div className="p-4 border-b border-steel/20 flex justify-between items-center bg-midnight">
-          <span className="text-steel font-body">{relays.length} active relays found</span>
+          <span className="text-steel font-body">{filteredRelays.length} active relays found</span>
           <div className="flex bg-steel/10 rounded-lg p-1">
             <button 
               className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${view === 'list' ? 'bg-azure text-white shadow' : 'text-steel hover:text-white'}`}
@@ -138,7 +197,7 @@ export default function BrowseListings() {
                 <Loader2 className="w-8 h-8 animate-spin text-azure mb-4" />
                 <p className="text-steel font-body">Searching for nearby food...</p>
               </div>
-            ) : relays.length === 0 ? (
+            ) : filteredRelays.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-8">
                 <div className="text-6xl mb-4">🍽️</div>
                 <h3 className="text-2xl font-bold text-white font-display mb-2">No food found</h3>
@@ -148,7 +207,7 @@ export default function BrowseListings() {
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {relays.map(relay => {
+                {filteredRelays.map(relay => {
                   const timeRemaining = getTimeRemaining(relay.pickup_window.end);
                   const isUrgent = timeRemaining.includes('m') && !timeRemaining.includes('h');
                   
@@ -201,7 +260,7 @@ export default function BrowseListings() {
           ) : (
             <div className="h-full min-h-[500px] w-full rounded-xl border border-steel/20 bg-midnight relative overflow-hidden">
               <RelayMap 
-                relays={relays} 
+                relays={filteredRelays} 
                 centerLat={lat} 
                 centerLng={lng} 
                 radiusKm={radius} 
