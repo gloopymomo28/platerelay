@@ -185,6 +185,16 @@ async def upload_document(
 @router.get("/me")
 async def get_me(user: dict = Depends(get_current_user)):
     """Return the current user's full profile."""
+    if user.get("role") == "recipient":
+        db = get_db()
+        now = datetime.utcnow()
+        first_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        actual_claims = await db.relays.count_documents({
+            "claimed_by": user["_id"],
+            "claimed_at": {"$gte": first_of_month}
+        })
+        user["claims_this_month"] = actual_claims
+        
     return _serialize_user(user.copy())
 
 
