@@ -59,7 +59,7 @@ export default function Login() {
              style={{ border: '3px solid #00E5FF', boxShadow: '0 0 30px rgba(0,229,255,0.4)', animationDelay: '1s' }} alt="" />
 
         <div className="relative z-10 text-center max-w-sm">
-          <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-40 h-40 object-contain mb-8 drop-shadow-[0_0_30px_rgba(255,122,0,0.4)] animate-float" />
+          <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-40 h-40 object-contain mb-8 mx-auto drop-shadow-[0_0_15px_rgba(255,122,0,0.3)]" />
           <h2 className="text-3xl font-display font-bold text-white mb-4">
             Every relay matters.
           </h2>
