@@ -40,16 +40,10 @@ async def upload_relay_photo(file: UploadFile) -> dict:
     _ensure_configured()
     contents = await file.read()
 
-    # ── Validate dimensions ──
+    # ── Basic validation ──
     try:
         img = Image.open(io.BytesIO(contents))
-        if img.width < 400 or img.height < 300:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Photo must be at least 400×300 pixels. Yours is {img.width}×{img.height}. 📸",
-            )
-    except HTTPException:
-        raise
+        # Note: Minimum dimensions restriction has been removed
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -125,13 +119,7 @@ async def upload_shelter_photo(file: UploadFile) -> dict:
     # ── Basic validation ──
     try:
         img = Image.open(io.BytesIO(contents))
-        if img.width < 200 or img.height < 200:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Photo must be at least 200×200 pixels.",
-            )
-    except HTTPException:
-        raise
+        # Note: Minimum dimensions restriction has been removed
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

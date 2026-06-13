@@ -73,7 +73,7 @@ const useAuthStore = create((set, get) => ({
    * MongoDB user document with role + org info. Falls back gracefully if the
    * backend is unavailable (useful during hackathon demo).
    */
-  register: async (email, password, role = 'donor', org_name = '') => {
+  register: async (email, password, role = 'donor', org_name = '', fullProfile = null) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
 
@@ -85,6 +85,13 @@ const useAuthStore = create((set, get) => ({
         role,
         org_name: org_name || email.split('@')[0],
       });
+      
+      // If we have full address/location data, complete the profile immediately
+      if (fullProfile) {
+        // Need to set the session token so the backend recognizes the user
+        set({ session: data.session }); 
+        await client.post('/api/auth/complete-profile', fullProfile);
+      }
     } catch (backendError) {
       // Backend may not be running during demo — store a minimal user locally
       console.warn('Backend not available, using local user state:', backendError.message);
@@ -95,10 +102,21 @@ const useAuthStore = create((set, get) => ({
       email,
       role,
       org_name: org_name || email.split('@')[0],
-      verification_status: 'pending_verification',
+      verification_status: fullProfile ? 'pending_docs' : 'pending_verification',
       subscription: { plan: 'free' },
+      location: fullProfile?.location || null,
+      address: fullProfile?.address || null,
     };
     set({ user: provisionalUser, session: data.session });
+    
+    // Refresh user from backend if possible
+    try {
+      const dbUser = await getMe();
+      set({ user: dbUser });
+    } catch (e) {
+      // ignore
+    }
+    
     return data;
   },
 

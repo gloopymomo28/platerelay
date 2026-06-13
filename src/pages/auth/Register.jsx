@@ -13,7 +13,11 @@ const schema = z.object({
   role: z.enum(["donor", "recipient"], { required_error: "Please select a role" }),
   org_name: z.string().min(2, { message: "Organization name is required" }),
   contact_name: z.string().min(2, { message: "Contact name is required" }),
+  phone: z.string().regex(/^\+?\d{10,15}$/, { message: "Valid phone number required" }),
+  street: z.string().min(2, { message: "Street is required" }),
   city: z.string().min(2, { message: "City is required" }),
+  state: z.string().min(2, { message: "State is required" }),
+  pincode: z.string().regex(/^\d{6}$/, { message: "Valid 6-digit pincode required" }),
 });
 
 function FieldInput({ label, icon: Icon, error, ...inputProps }) {
@@ -59,10 +63,73 @@ export default function Register() {
 
   const selectedRole = watch("role");
 
+  const [coordinates, setCoordinates] = useState(null);
+  const [isLocating, setIsLocating] = useState(false);
+
+  const fetchCoordinates = async (addressData) => {
+    // 1. Try Geolocation first if user clicks the GPS button
+    // But since this is called on submit, we use Nominatim API
+    try {
+      const query = `${addressData.street}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+      }
+    } catch (e) {
+      console.error('Geocoding failed', e);
+    }
+    // Fallback: random coordinates in the chosen city, or default to Bangalore
+    return [77.5946, 12.9716]; 
+  };
+
+  const handleUseGPS = () => {
+    setIsLocating(true);
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates([position.coords.longitude, position.coords.latitude]);
+          toast.success("GPS Location acquired! 📍");
+          setIsLocating(false);
+        },
+        (error) => {
+          toast.error("Could not get GPS location. Please enter address manually.");
+          setIsLocating(false);
+        }
+      );
+    } else {
+      toast.error("Geolocation not supported.");
+      setIsLocating(false);
+    }
+  };
+
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      await registerAction(data.email, data.password, data.role, data.org_name);
+      let finalCoords = coordinates;
+      if (!finalCoords) {
+        finalCoords = await fetchCoordinates(data);
+        setCoordinates(finalCoords);
+      }
+
+      const fullProfile = {
+        org_name: data.org_name,
+        contact_name: data.contact_name,
+        phone: data.phone,
+        address: {
+          street: data.street,
+          city: data.city,
+          state: data.state,
+          pincode: data.pincode,
+        },
+        location: {
+          type: "Point",
+          coordinates: finalCoords,
+        },
+        org_type: data.role === 'recipient' ? 'shelter' : null,
+      };
+
+      await registerAction(data.email, data.password, data.role, data.org_name, fullProfile);
       toast.success("Welcome to PlateRelay! Your account is pending verification. 🎉");
       if (data.role === 'donor') navigate('/donor/dashboard');
       else navigate('/recipient/dashboard');
@@ -137,8 +204,8 @@ export default function Register() {
               {errors.role && <p className="text-xs mt-1.5" style={{ color: '#f87171' }}>{errors.role.message}</p>}
             </div>
 
-            {/* Org + Contact */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Org */}
+            <div className="grid grid-cols-1 gap-4">
               <FieldInput
                 label="Organization Name"
                 icon={Building2}
@@ -146,12 +213,23 @@ export default function Register() {
                 placeholder={selectedRole === 'donor' ? "e.g. Royal Banquet Hall" : "e.g. Hope Shelter"}
                 {...register("org_name")}
               />
+            </div>
+            
+            {/* Contact + Phone */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FieldInput
                 label="Contact Person"
                 icon={User}
                 error={errors.contact_name?.message}
                 placeholder="Full Name"
                 {...register("contact_name")}
+              />
+              <FieldInput
+                label="Phone Number"
+                icon={User} // Can replace with Phone icon if imported
+                error={errors.phone?.message}
+                placeholder="10-digit number"
+                {...register("phone")}
               />
             </div>
 
@@ -175,14 +253,49 @@ export default function Register() {
               />
             </div>
 
-            {/* City */}
-            <FieldInput
-              label="City"
-              icon={MapPin}
-              error={errors.city?.message}
-              placeholder="e.g. Bangalore"
-              {...register("city")}
-            />
+            {/* Address Section */}
+            <div className="p-4 rounded-xl border border-steel/20 bg-midnight/30 space-y-4">
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-xs font-display font-bold text-steel">LOCATION DETAILS</label>
+                <button 
+                  type="button" 
+                  onClick={handleUseGPS}
+                  disabled={isLocating}
+                  className="text-xs bg-azure/10 text-azure px-3 py-1 rounded-md font-bold hover:bg-azure/20 transition-colors disabled:opacity-50"
+                >
+                  {isLocating ? 'Locating...' : (coordinates ? '📍 GPS Acquired' : '📍 Use GPS Location')}
+                </button>
+              </div>
+
+              <FieldInput
+                label="Street Address"
+                icon={MapPin}
+                error={errors.street?.message}
+                placeholder="e.g. 123 Main St, Near Park"
+                {...register("street")}
+              />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <FieldInput
+                  label="City"
+                  error={errors.city?.message}
+                  placeholder="e.g. Bangalore"
+                  {...register("city")}
+                />
+                <FieldInput
+                  label="State"
+                  error={errors.state?.message}
+                  placeholder="e.g. Karnataka"
+                  {...register("state")}
+                />
+                <FieldInput
+                  label="Pincode"
+                  error={errors.pincode?.message}
+                  placeholder="e.g. 560001"
+                  {...register("pincode")}
+                />
+              </div>
+            </div>
 
             {/* Submit */}
             <button

@@ -6,6 +6,7 @@ import { useNearbyRelays, useClaimRelay } from '../../api/relays';
 import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import RelayMap from '../../components/map/RelayMap';
 
 const categoryEmoji = {
   'cooked_meals': '🍛',
@@ -191,19 +192,14 @@ export default function BrowseListings() {
             )
           ) : (
             <div className="h-full rounded-xl border border-steel/20 bg-midnight flex items-center justify-center overflow-hidden">
-              {/* Map Placeholder */}
-              <div className="text-center p-8">
-                <div className="text-6xl mb-4">🗺️</div>
-                <h3 className="text-2xl font-bold text-white font-display mb-2">Interactive Map</h3>
-                <p className="text-steel font-body max-w-md mx-auto">
-                  Map integration using Leaflet.js would display here, plotting all {relays.length} active relays geographically.
-                </p>
-                <div className="mt-6 flex justify-center gap-2">
-                  <Badge variant="active" className="bg-cyan/20 text-cyan border-cyan/50 px-3 py-1 text-sm rounded-full">● 1h+ remaining</Badge>
-                  <Badge variant="warning" className="bg-saffron/20 text-saffron border-saffron/50 px-3 py-1 text-sm rounded-full">● 30-60m</Badge>
-                  <Badge className="bg-crimson/20 text-crimson border-crimson/50 px-3 py-1 text-sm rounded-full">● &lt;30m remaining</Badge>
-                </div>
-              </div>
+              <RelayMap 
+                relays={relays} 
+                centerLat={lat} 
+                centerLng={lng} 
+                radiusKm={radius} 
+                onClaim={handleClaim} 
+                claimPending={claimRelay.isPending} 
+              />
             </div>
           )}
         </div>
