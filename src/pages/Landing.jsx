@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import anime from 'animejs';
+import { FloatingFoodHero } from '../components/ui/hero-section-7';
 
 export default function Landing() {
   const heroRef = useRef(null);
@@ -54,54 +55,51 @@ export default function Landing() {
     <div className="min-h-screen bg-midnight text-white overflow-x-hidden">
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center overflow-hidden">
-
-        {/* Animated background blobs */}
-        <div className="orb absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #20A4F3, transparent 70%)' }} />
-        <div className="orb absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-15 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #59F8E8, transparent 70%)' }} />
-        <div className="orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F4A22D, transparent 70%)' }} />
-
-        {/* Grid overlay */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'linear-gradient(rgba(193,207,218,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(193,207,218,0.03) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }} />
-
-        {/* Pill badge */}
-        <div className="hero-element opacity-0 mb-8">
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border"
-            style={{ background: 'rgba(32,164,243,0.1)', borderColor: 'rgba(32,164,243,0.3)', color: '#20A4F3' }}>
-            <span className="w-2 h-2 rounded-full bg-cyan animate-pulse inline-block" />
-            Zero-waste food logistics platform
-          </span>
-        </div>
-
-        {/* Headline */}
-        <h1 className="hero-element opacity-0 font-display font-bold leading-[1.08] mb-8"
-          style={{ fontSize: 'clamp(2.5rem, 7vw, 5rem)' }}>
-          Because leftovers deserve<br />
-          <span style={{
-            background: 'linear-gradient(135deg, #20A4F3 0%, #59F8E8 50%, #F4A22D 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>
-            a standing ovation
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="hero-element opacity-0 font-body text-lg md:text-xl max-w-2xl mb-12 leading-relaxed"
-          style={{ color: '#C1CFDA' }}>
-          Every surplus meal finds its next table. Connect restaurants with local shelters
-          in under 15 minutes — real-time, photo-first, zero bureaucracy.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="hero-element opacity-0 flex flex-col sm:flex-row gap-4">
+      <FloatingFoodHero
+        className="min-h-screen"
+        title={
+          <>
+            Because leftovers deserve<br />
+            <span style={{
+              background: 'linear-gradient(135deg, #20A4F3 0%, #59F8E8 50%, #F4A22D 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              a standing ovation
+            </span>
+          </>
+        }
+        description="Every surplus meal finds its next table. Connect restaurants with local shelters in under 15 minutes — real-time, photo-first, zero bureaucracy."
+        images={[
+          {
+            src: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=400&auto=format&fit=crop',
+            alt: 'Biryani in a traditional pot',
+            className: 'w-40 sm:w-56 md:w-64 lg:w-72 top-10 left-4 sm:left-10 md:top-20 md:left-20 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=400&auto=format&fit=crop',
+            alt: 'Crispy Samosas',
+            className: 'w-28 sm:w-36 md:w-48 top-10 right-4 sm:right-10 md:top-16 md:right-16 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=80&w=400&auto=format&fit=crop',
+            alt: 'Naan bread and curry',
+            className: 'w-32 sm:w-40 md:w-56 bottom-8 right-5 sm:right-10 md:bottom-16 md:right-20 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
+          },
+           {
+            src: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=400&auto=format&fit=crop',
+            alt: 'Indian Spices',
+            className: 'w-20 sm:w-28 top-1/4 left-1/3 animate-float rounded-full shadow-xl object-cover aspect-square border-2 border-midnight/30',
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=400&auto=format&fit=crop',
+            alt: 'Idli with sambhar',
+            className: 'w-20 sm:w-28 bottom-1/4 left-1/4 animate-float rounded-full shadow-xl object-cover aspect-square border-2 border-midnight/30',
+          },
+        ]}
+      >
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link to="/register">
             <button className="group relative px-8 py-4 rounded-2xl font-display font-bold text-base overflow-hidden transition-all duration-300 hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
@@ -118,23 +116,7 @@ export default function Landing() {
             </button>
           </Link>
         </div>
-
-        {/* Social proof strip */}
-        <div className="hero-element opacity-0 mt-16 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm" style={{ color: 'rgba(193,207,218,0.6)' }}>
-          <span>100% Free for donors</span>
-          <span>Verified shelters only</span>
-          <span>Sub-2-hour coordination</span>
-          <span>India-first, UPI payments</span>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs font-body" style={{ color: '#C1CFDA' }}>Scroll to explore</span>
-          <div className="w-5 h-9 rounded-full border border-steel/30 flex items-start justify-center pt-1.5">
-            <div className="w-1.5 h-3 rounded-full bg-azure animate-bounce" />
-          </div>
-        </div>
-      </section>
+      </FloatingFoodHero>
 
       {/* ─── STATS ─── */}
       <section className="py-24 relative">
