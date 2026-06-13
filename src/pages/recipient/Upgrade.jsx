@@ -5,6 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import toast from 'react-hot-toast';
+import client from '../../api/client';
+import useAuthStore from '../../store/authStore';
 
 const plans = [
   {
@@ -87,14 +89,25 @@ export default function Upgrade() {
   const [loading, setLoading] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
 
+  const refreshUser = useAuthStore(state => state.refreshUser);
+
   const handleUpgrade = async (planId) => {
     setLoading(planId);
-    // Simulate Razorpay checkout (test mode)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(null);
-    toast.success(`🎉 Successfully upgraded to ${planId === 'saathi' ? 'Saathi Plan' : 'Daan Pro'}! (Demo mode — no real charge)`, {
-      duration: 5000,
-    });
+    try {
+      // Call the demo-upgrade endpoint on the backend
+      await client.post('/api/subscriptions/demo-upgrade', { plan: planId });
+      
+      // Refresh the user profile in the global store so the UI knows they are upgraded
+      await refreshUser();
+      
+      toast.success(`🎉 Successfully upgraded to ${planId === 'saathi' ? 'Saathi Plan' : 'Daan Pro'}! (Demo mode)`, {
+        duration: 5000,
+      });
+    } catch (error) {
+      toast.error('Failed to upgrade. Please try again.');
+    } finally {
+      setLoading(null);
+    }
   };
 
   return (

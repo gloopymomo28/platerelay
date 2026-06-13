@@ -180,6 +180,39 @@ async def verify_payment(
 
 
 # ─────────────────────────────────────────────────────────────
+# POST /api/subscriptions/demo-upgrade — Demo Mode Upgrade
+# ─────────────────────────────────────────────────────────────
+@router.post("/demo-upgrade")
+async def demo_upgrade(
+    payload: SubscriptionCreate,
+    user: dict = Depends(require_verified),
+):
+    """Force an upgrade for demo/hackathon purposes without Razorpay verification."""
+    plan = payload.plan
+    if plan not in ("saathi", "daan_pro"):
+        plan = "saathi"
+
+    db = get_db()
+    now = datetime.utcnow()
+    await db.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {
+            "subscription.plan": plan,
+            "subscription.status": "active",
+            "subscription.started_at": now,
+            "subscription.expires_at": None,
+            "updated_at": now,
+        }},
+    )
+
+    return {
+        "message": f"🎉 Demo upgrade to {plan.replace('_', ' ').title()} successful!",
+        "plan": plan,
+        "status": "active",
+    }
+
+
+# ─────────────────────────────────────────────────────────────
 # GET /api/subscriptions/status — Current subscription
 # ─────────────────────────────────────────────────────────────
 @router.get("/status")
