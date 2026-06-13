@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
-from .api import (
+from api import (
     auth, relays, notifications, impact, disputes, 
     subscriptions, webhooks, admin, profiles, shelter_photos, leaderboard
 )

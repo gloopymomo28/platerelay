@@ -3,10 +3,10 @@ from typing import List, Optional
 from datetime import datetime
 from bson import ObjectId
 
-from ..database import get_db
-from ..auth.dependencies import require_admin
-from ..models.common import VerificationStatus, RelayStatus
-from ..services.email_service import send_account_approved_email, send_account_rejected_email
+from database import get_db
+from auth.dependencies import require_admin
+from models.common import VerificationStatus, RelayStatus
+from services.email_service import send_account_approved_email, send_account_rejected_email
 from pydantic import BaseModel
 
 router = APIRouter(tags=["Admin"])

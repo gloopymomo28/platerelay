@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from bson import ObjectId
 from datetime import datetime
 
-from ..database import get_db
-from ..auth.dependencies import require_recipient
-from ..services.cloudinary_service import upload_shelter_photo
+from database import get_db
+from auth.dependencies import require_recipient
+from services.cloudinary_service import upload_shelter_photo
 
 router = APIRouter(tags=["Shelter Photos"])
 

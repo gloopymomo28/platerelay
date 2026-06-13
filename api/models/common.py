@@ -3,7 +3,7 @@ PlateRelay — Shared Enums & Base Models
 Every enum used across the platform lives here.
 """
 
-from enum import str, Enum
+from enum import Enum
 
 
 class Role(str, Enum):

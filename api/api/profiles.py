@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from bson import ObjectId
 
-from ..database import get_db
-from ..services.report_service import calculate_co2_saved
+from database import get_db
+from services.report_service import calculate_co2_saved
 
 router = APIRouter(tags=["Profiles"])
 
