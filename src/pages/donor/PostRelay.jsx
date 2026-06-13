@@ -40,52 +40,59 @@ export default function PostRelay() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('food_name', data.food_name);
-    formData.append('category', data.category);
-    formData.append('quantity_value', data.quantity_value);
-    formData.append('quantity_unit', data.quantity_unit);
-    formData.append('is_vegetarian', data.is_vegetarian);
-    formData.append('allergens', data.allergens || '');
-    formData.append('notes', data.notes || '');
-    
-    // Auto-fill pickup location from user's profile
-    const address = user?.address || {};
-    const coords = user?.location?.coordinates || [0, 0];
-    formData.append('pickup_street', address.street || 'Unknown Street');
-    formData.append('pickup_city', address.city || 'Unknown City');
-    formData.append('pickup_instructions', data.pickup_instructions || '');
-    formData.append('pickup_lng', coords[0]);
-    formData.append('pickup_lat', coords[1]);
+    try {
+      const formData = new FormData();
+      formData.append('food_name', data.food_name);
+      formData.append('category', data.category);
+      formData.append('quantity_value', parseFloat(data.quantity_value));
+      formData.append('quantity_unit', data.quantity_unit);
+      formData.append('is_vegetarian', data.is_vegetarian);
+      formData.append('allergens', data.allergens || '');
+      formData.append('notes', data.notes || '');
+      
+      // Auto-fill pickup location from user's profile
+      const address = user?.address || {};
+      const lng = user?.location?.coordinates?.[0] || 77.5946;  // Default: Bangalore
+      const lat = user?.location?.coordinates?.[1] || 12.9716;
+      formData.append('pickup_street', address.street || data.pickup_street || 'Main Street');
+      formData.append('pickup_city', address.city || data.pickup_city || 'Bangalore');
+      formData.append('pickup_instructions', data.pickup_instructions || '');
+      formData.append('pickup_lng', lng);
+      formData.append('pickup_lat', lat);
 
-    // Handle dates
-    const now = new Date();
-    // End time is from the time input (HH:MM), assumed to be today
-    const [endHours, endMinutes] = data.pickup_end.split(':');
-    const endDate = new Date();
-    endDate.setHours(parseInt(endHours, 10));
-    endDate.setMinutes(parseInt(endMinutes, 10));
-    endDate.setSeconds(0);
-    
-    // If end date is in the past, assume tomorrow
-    if (endDate <= now) {
-      endDate.setDate(endDate.getDate() + 1);
-    }
-
-    formData.append('pickup_window_start', now.toISOString());
-    formData.append('pickup_window_end', endDate.toISOString());
-    formData.append('quality_pledge_confirmed', 'true');
-    formData.append('photo', selectedPhoto);
-
-    createRelay.mutate(formData, {
-      onSuccess: () => {
-        toast.success("Your relay is live! Someone's night just got better. 🍽️");
-        navigate('/donor/my-relays');
-      },
-      onError: (error) => {
-        toast.error(error?.response?.data?.detail || 'Failed to post relay.');
+      // Pickup window: start = 5 minutes from now (to avoid server timezone drift)
+      const start = new Date(Date.now() + 5 * 60 * 1000);
+      // End time is from the time input (HH:MM), assumed to be today
+      const [endHours, endMinutes] = data.pickup_end.split(':');
+      const endDate = new Date();
+      endDate.setHours(parseInt(endHours, 10));
+      endDate.setMinutes(parseInt(endMinutes, 10));
+      endDate.setSeconds(0);
+      
+      // If end date is in the past or before start, push to tomorrow
+      if (endDate <= start) {
+        endDate.setDate(endDate.getDate() + 1);
       }
-    });
+
+      formData.append('pickup_window_start', start.toISOString());
+      formData.append('pickup_window_end', endDate.toISOString());
+      formData.append('quality_pledge_confirmed', 'true');
+      formData.append('photo', selectedPhoto);
+
+      createRelay.mutate(formData, {
+        onSuccess: () => {
+          toast.success("Your relay is live! Someone's night just got better. 🍽️");
+          navigate('/donor/relays');
+        },
+        onError: (error) => {
+          console.error('Relay creation failed:', error);
+          toast.error(error?.response?.data?.detail || 'Failed to post relay.');
+        }
+      });
+    } catch (err) {
+      console.error('Form submission error:', err);
+      toast.error('Something went wrong. Please try again.');
+    }
   };
 
   return (
@@ -152,7 +159,7 @@ export default function PostRelay() {
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                   required
                 >
-                  <option value="cooked_meals">Cooked Meals</option>
+                  <option value="cooked_meal">Cooked Meals</option>
                   <option value="bakery">Bakery & Pastries</option>
                   <option value="raw_produce">Raw Produce</option>
                   <option value="packaged">Packaged</option>
@@ -166,8 +173,8 @@ export default function PostRelay() {
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                   required
                 >
-                  <option value="veg">Vegetarian</option>
-                  <option value="non_veg">Non-Vegetarian</option>
+                  <option value="true">Vegetarian</option>
+                  <option value="false">Non-Vegetarian</option>
                   <option value="mixed">Mixed</option>
                 </select>
               </div>
@@ -191,8 +198,6 @@ export default function PostRelay() {
                   <option value="servings">Servings / Meals</option>
                   <option value="kg">Kilograms (kg)</option>
                   <option value="items">Individual Items</option>
-                  <option value="liters">Liters</option>
-                  <option value="boxes">Boxes</option>
                 </select>
               </div>
             </div>

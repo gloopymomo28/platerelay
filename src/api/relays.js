@@ -51,7 +51,7 @@ export const useCreateRelay = () => {
   return useMutation({
     mutationFn: async (formData) => {
       const response = await client.post('/api/relays', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': undefined },  // Let browser set multipart boundary
       });
       return response.data;
     },
