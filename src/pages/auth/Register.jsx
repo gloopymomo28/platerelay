@@ -67,19 +67,28 @@ export default function Register() {
   const [isLocating, setIsLocating] = useState(false);
 
   const fetchCoordinates = async (addressData) => {
-    // 1. Try Geolocation first if user clicks the GPS button
-    // But since this is called on submit, we use Nominatim API
     try {
-      const query = `${addressData.street}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
-      const data = await res.json();
+      // 1. Try full address first
+      const fullQuery = `${addressData.street}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
+      let res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullQuery)}&format=json&limit=1`);
+      let data = await res.json();
+      
+      if (data && data.length > 0) {
+        return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+      }
+
+      // 2. Fallback to just City and State if full street address is not found in OSM
+      const cityQuery = `${addressData.city}, ${addressData.state}`;
+      res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityQuery)}&format=json&limit=1`);
+      data = await res.json();
+
       if (data && data.length > 0) {
         return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
       }
     } catch (e) {
       console.error('Geocoding failed', e);
     }
-    // Fallback: random coordinates in the chosen city, or default to Bangalore
+    // Final Fallback: Bangalore
     return [77.5946, 12.9716]; 
   };
 
