@@ -159,11 +159,11 @@ export default function PostRelay() {
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                   required
                 >
-                  <option value="cooked_meal">Cooked Meals</option>
-                  <option value="bakery">Bakery & Pastries</option>
-                  <option value="raw_produce">Raw Produce</option>
-                  <option value="packaged">Packaged</option>
-                  <option value="other">Other</option>
+                  <option value="cooked_meal" className="bg-midnight">Cooked Meals</option>
+                  <option value="bakery" className="bg-midnight">Bakery & Pastries</option>
+                  <option value="raw_produce" className="bg-midnight">Raw Produce</option>
+                  <option value="packaged" className="bg-midnight">Packaged</option>
+                  <option value="other" className="bg-midnight">Other</option>
                 </select>
               </div>
               <div className="space-y-1">
@@ -173,9 +173,9 @@ export default function PostRelay() {
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                   required
                 >
-                  <option value="true">Vegetarian</option>
-                  <option value="false">Non-Vegetarian</option>
-                  <option value="mixed">Mixed</option>
+                  <option value="true" className="bg-midnight">Vegetarian</option>
+                  <option value="false" className="bg-midnight">Non-Vegetarian</option>
+                  <option value="mixed" className="bg-midnight">Mixed</option>
                 </select>
               </div>
             </div>
@@ -195,9 +195,9 @@ export default function PostRelay() {
                   {...register("quantity_unit")}
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                 >
-                  <option value="servings">Servings / Meals</option>
-                  <option value="kg">Kilograms (kg)</option>
-                  <option value="items">Individual Items</option>
+                  <option value="servings" className="bg-midnight">Servings / Meals</option>
+                  <option value="kg" className="bg-midnight">Kilograms (kg)</option>
+                  <option value="items" className="bg-midnight">Individual Items</option>
                 </select>
               </div>
             </div>
