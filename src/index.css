@@ -1,0 +1,176 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-steel: #C1CFDA;
+  --color-azure: #20A4F3;
+  --color-cyan: #59F8E8;
+  --color-crimson: #941C2F;
+  --color-midnight: #03191E;
+  --color-steel-10: rgba(193, 207, 218, 0.1);
+  --color-steel-20: rgba(193, 207, 218, 0.2);
+  --color-steel-30: rgba(193, 207, 218, 0.3);
+  --color-azure-glow: rgba(32, 164, 243, 0.3);
+  --color-cyan-glow: rgba(89, 248, 232, 0.3);
+  --color-crimson-glow: rgba(148, 28, 47, 0.3);
+  --color-midnight-light: #0a2e36;
+  --color-midnight-lighter: #0f3d47;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-accent: 'Caveat', cursive;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-midnight);
+  color: white;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(193, 207, 218, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(193, 207, 218, 0.12);
+  border-radius: 16px;
+}
+
+.glass-card-hover:hover {
+  background: rgba(193, 207, 218, 0.12);
+  border-color: rgba(193, 207, 218, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-midnight);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(193, 207, 218, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(193, 207, 218, 0.5);
+}
+
+/* Azure glow button */
+.btn-azure-glow {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.btn-azure-glow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(32, 164, 243, 0.2), rgba(89, 248, 232, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-azure-glow:hover::before {
+  opacity: 1;
+}
+.btn-azure-glow:hover {
+  box-shadow: 0 0 24px rgba(32, 164, 243, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Witty text style */
+.witty-text {
+  font-family: var(--font-accent);
+  font-size: 1.25rem;
+  color: var(--color-cyan);
+}
+
+/* Pulse animation for badges */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(89, 248, 232, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(89, 248, 232, 0.6); }
+}
+
+.badge-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.badge-glow-hover:hover {
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-azure), var(--color-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Food safety warning */
+.safety-warning {
+  background: linear-gradient(135deg, rgba(148, 28, 47, 0.15), rgba(148, 28, 47, 0.05));
+  border: 1px solid rgba(148, 28, 47, 0.4);
+  border-radius: 12px;
+}
+
+/* Map container */
+.leaflet-container {
+  border-radius: 12px;
+  z-index: 1;
+}
+
+/* Countdown timer color coding */
+.countdown-green { color: var(--color-cyan); }
+.countdown-amber { color: #F59E0B; }
+.countdown-red { color: var(--color-crimson); }
+
+/* Page transition */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, 
+    rgba(193, 207, 218, 0.05) 25%, 
+    rgba(193, 207, 218, 0.1) 50%, 
+    rgba(193, 207, 218, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Hide Leaflet attribution on mobile */
+@media (max-width: 640px) {
+  .leaflet-control-attribution {
+    display: none;
+  }
+}

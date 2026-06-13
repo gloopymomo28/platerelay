@@ -1,0 +1,3 @@
+@echo off
+echo Starting PlateRelay Backend...
+python -m uvicorn api.index:app --reload

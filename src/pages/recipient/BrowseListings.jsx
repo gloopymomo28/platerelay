@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { Input } from '../../components/ui/Input';
+
+export default function BrowseListings() {
+  const [view, setView] = useState('list'); // 'list' | 'map'
+  const [radius, setRadius] = useState(10);
+
+  // Mock data
+  const relays = [
+    { id: 1, food_name: 'Buffet Surplus - Rice & Dal', quantity: 40, unit: 'servings', distance: '2.4 km', expires_in: '1h 20m', donor: 'Royal Banquet', category: 'Cooked Meals', veg: 'Veg' },
+    { id: 2, food_name: 'Assorted Pastries', quantity: 15, unit: 'items', distance: '4.1 km', expires_in: '45m', donor: 'Bakers Street', category: 'Bakery', veg: 'Egg' },
+    { id: 3, food_name: 'Raw Vegetables Box', quantity: 12, unit: 'kg', distance: '6.8 km', expires_in: '3h 15m', donor: 'FreshMart', category: 'Raw Produce', veg: 'Veg' },
+  ];
+
+  return (
+    <div className="h-[calc(100vh-64px)] flex flex-col md:flex-row bg-midnight">
+      
+      {/* Sidebar / Filters */}
+      <div className="w-full md:w-80 bg-midnight/80 border-r border-steel/20 p-4 flex flex-col h-full overflow-y-auto">
+        <h2 className="text-2xl font-display font-bold text-white mb-6">Find Food</h2>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="text-sm font-bold text-steel mb-2 block">Search Radius: {radius} km</label>
+            <input 
+              type="range" 
+              min="1" max="25" 
+              value={radius} 
+              onChange={(e) => setRadius(e.target.value)}
+              className="w-full accent-azure"
+            />
+            <div className="flex justify-between text-xs text-steel mt-1">
+              <span>1 km</span>
+              <span>25 km</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-bold text-steel mb-2 block">Dietary</label>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="ghost" className="cursor-pointer hover:bg-steel/20">All</Badge>
+              <Badge variant="ghost" className="cursor-pointer border-cyan text-cyan">Veg Only</Badge>
+              <Badge variant="ghost" className="cursor-pointer hover:bg-steel/20">No Egg</Badge>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-bold text-steel mb-2 block">Category</label>
+            <div className="space-y-2">
+              {['Cooked Meals', 'Bakery', 'Raw Produce', 'Packaged'].map(cat => (
+                <label key={cat} className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                  <input type="checkbox" className="accent-azure rounded" defaultChecked />
+                  {cat}
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-full">
+        {/* Top bar with Map/List toggle */}
+        <div className="p-4 border-b border-steel/20 flex justify-between items-center bg-midnight">
+          <span className="text-steel font-body">{relays.length} active relays found</span>
+          <div className="flex bg-steel/10 rounded-lg p-1">
+            <button 
+              className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${view === 'list' ? 'bg-azure text-white shadow' : 'text-steel hover:text-white'}`}
+              onClick={() => setView('list')}
+            >
+              List View
+            </button>
+            <button 
+              className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${view === 'map' ? 'bg-azure text-white shadow' : 'text-steel hover:text-white'}`}
+              onClick={() => setView('map')}
+            >
+              Map View 🗺️
+            </button>
+          </div>
+        </div>
+
+        {/* Content View */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-steel/5">
+          {view === 'list' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {relays.map(relay => (
+                <Card key={relay.id} className="p-0 border-steel/20 bg-midnight/50 flex flex-col sm:flex-row hover:border-azure/30 transition-all hover:-translate-y-1 shadow-lg">
+                  <div className="w-full sm:w-40 h-40 sm:h-auto bg-steel/10 flex items-center justify-center text-4xl border-r border-steel/10">
+                    {relay.category === 'Bakery' ? '🥐' : relay.category === 'Raw Produce' ? '🥬' : '🍛'}
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex gap-2">
+                        <Badge variant="active">Active</Badge>
+                        <Badge variant="ghost" className="text-xs border-steel/20 text-steel">{relay.veg}</Badge>
+                      </div>
+                      <span className={`text-sm font-bold ${relay.expires_in.includes('45m') ? 'text-crimson animate-pulse' : 'text-cyan'}`}>
+                        ⏱️ {relay.expires_in}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white font-display leading-tight">{relay.food_name}</h3>
+                    <p className="text-steel text-xs font-body mb-3">From: {relay.donor}</p>
+                    
+                    <div className="mt-auto flex justify-between items-end">
+                      <div>
+                        <div className="text-lg font-bold text-white">{relay.quantity} <span className="text-sm font-normal text-steel">{relay.unit}</span></div>
+                        <div className="text-xs text-steel">📍 {relay.distance} away</div>
+                      </div>
+                      <Button variant="primary" size="sm">Claim Food</Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="h-full rounded-xl border border-steel/20 bg-midnight flex items-center justify-center overflow-hidden">
+              {/* Map Placeholder */}
+              <div className="text-center p-8">
+                <div className="text-6xl mb-4">🗺️</div>
+                <h3 className="text-2xl font-bold text-white font-display mb-2">Interactive Map</h3>
+                <p className="text-steel font-body max-w-md mx-auto">
+                  Map integration using Leaflet.js would display here, plotting all {relays.length} active relays geographically.
+                </p>
+                <div className="mt-6 flex justify-center gap-2">
+                  <Badge variant="active" className="bg-cyan/20 text-cyan border-cyan/50 px-3 py-1 text-sm rounded-full">● 1h+ remaining</Badge>
+                  <Badge variant="warning" className="bg-saffron/20 text-saffron border-saffron/50 px-3 py-1 text-sm rounded-full">● 30-60m</Badge>
+                  <Badge className="bg-crimson/20 text-crimson border-crimson/50 px-3 py-1 text-sm rounded-full">● &lt;30m remaining</Badge>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
