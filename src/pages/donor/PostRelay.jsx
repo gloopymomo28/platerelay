@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import toast from 'react-hot-toast';
+import useAuthStore from '../../store/authStore';
+import { useCreateRelay } from '../../api/relays';
 
 export default function PostRelay() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isPledgeChecked, setIsPledgeChecked] = useState(false);
   const [pledgeTimer, setPledgeTimer] = useState(3);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const fileInputRef = useRef(null);
   
+  const user = useAuthStore(state => state.user);
+  const createRelay = useCreateRelay();
   const { register, handleSubmit } = useForm();
 
   // Simple countdown for the pledge
@@ -22,9 +28,64 @@ export default function PostRelay() {
     }
   }, [step, pledgeTimer]);
 
+  const handlePhotoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedPhoto(e.target.files[0]);
+    }
+  };
+
   const onSubmit = async (data) => {
-    toast.success("Your relay is live! Someone's night just got better. 🍽️");
-    navigate('/donor/dashboard');
+    if (!selectedPhoto) {
+      toast.error('Please upload a photo of the food.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('food_name', data.food_name);
+    formData.append('category', data.category);
+    formData.append('quantity_value', data.quantity_value);
+    formData.append('quantity_unit', data.quantity_unit);
+    formData.append('is_vegetarian', data.is_vegetarian);
+    formData.append('allergens', data.allergens || '');
+    formData.append('notes', data.notes || '');
+    
+    // Auto-fill pickup location from user's profile
+    const address = user?.address || {};
+    const coords = user?.location?.coordinates || [0, 0];
+    formData.append('pickup_street', address.street || 'Unknown Street');
+    formData.append('pickup_city', address.city || 'Unknown City');
+    formData.append('pickup_instructions', data.pickup_instructions || '');
+    formData.append('pickup_lng', coords[0]);
+    formData.append('pickup_lat', coords[1]);
+
+    // Handle dates
+    const now = new Date();
+    // End time is from the time input (HH:MM), assumed to be today
+    const [endHours, endMinutes] = data.pickup_end.split(':');
+    const endDate = new Date();
+    endDate.setHours(parseInt(endHours, 10));
+    endDate.setMinutes(parseInt(endMinutes, 10));
+    endDate.setSeconds(0);
+    
+    // If end date is in the past, assume tomorrow
+    if (endDate <= now) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    formData.append('pickup_window_start', now.toISOString());
+    formData.append('pickup_window_end', endDate.toISOString());
+    formData.append('quality_pledge_confirmed', 'true');
+    formData.append('photo', selectedPhoto);
+
+    createRelay.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Your relay is live! Someone's night just got better. 🍽️");
+        navigate('/donor/my-relays');
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.detail || 'Failed to post relay.');
+      }
+    });
   };
 
   return (
@@ -79,51 +140,108 @@ export default function PostRelay() {
             <Input
               label="What are you donating?"
               {...register("food_name")}
-              placeholder="e.g. Dal Makhani + Rice, Assorted Bread"
+              placeholder="e.g. BBQ Chicken, Dal Makhani + Rice"
               required
             />
             
             <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-steel">Category</label>
+                <select 
+                  {...register("category")}
+                  className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
+                  required
+                >
+                  <option value="cooked_meals">Cooked Meals</option>
+                  <option value="bakery">Bakery & Pastries</option>
+                  <option value="raw_produce">Raw Produce</option>
+                  <option value="packaged">Packaged</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-steel">Dietary</label>
+                <select 
+                  {...register("is_vegetarian")}
+                  className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
+                  required
+                >
+                  <option value="veg">Vegetarian</option>
+                  <option value="non_veg">Non-Vegetarian</option>
+                  <option value="mixed">Mixed</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Quantity"
                 type="number"
-                {...register("quantity")}
+                step="0.1"
+                {...register("quantity_value")}
                 placeholder="e.g. 20"
                 required
               />
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-steel">Unit</label>
                 <select 
-                  {...register("unit")}
+                  {...register("quantity_unit")}
                   className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
                 >
                   <option value="servings">Servings / Meals</option>
                   <option value="kg">Kilograms (kg)</option>
                   <option value="items">Individual Items</option>
+                  <option value="liters">Liters</option>
+                  <option value="boxes">Boxes</option>
                 </select>
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-steel">Pickup Window End Time</label>
-              <input 
-                type="time" 
-                {...register("pickup_end")}
-                className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
-                required
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-steel">Pickup Window End Time</label>
+                <input 
+                  type="time" 
+                  {...register("pickup_end")}
+                  className="w-full h-[42px] px-3 bg-steel/10 border border-steel/20 rounded-md text-white focus:outline-none focus:border-azure transition-colors"
+                  required
+                />
+                <p className="text-xs text-steel mt-1">When does it need to be picked up by?</p>
+              </div>
+              <Input
+                label="Pickup Instructions (Optional)"
+                {...register("pickup_instructions")}
+                placeholder="e.g. Come to the back door"
               />
-              <p className="text-xs text-steel mt-1">When does the shelter need to pick this up by?</p>
             </div>
 
-            <div className="p-4 border-2 border-dashed border-steel/30 rounded-lg text-center hover:border-azure/50 transition-colors cursor-pointer bg-steel/5">
-              <div className="text-4xl mb-2">📸</div>
-              <p className="text-white font-bold font-display">Click to upload food photo</p>
-              <p className="text-steel text-sm font-body mt-1">Photo is required to build trust.</p>
+            <div 
+              className="p-4 border-2 border-dashed border-steel/30 rounded-lg text-center hover:border-azure/50 transition-colors cursor-pointer bg-steel/5"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {selectedPhoto ? (
+                <div className="text-azure font-bold">{selectedPhoto.name} selected</div>
+              ) : (
+                <>
+                  <div className="text-4xl mb-2">📸</div>
+                  <p className="text-white font-bold font-display">Click to upload food photo</p>
+                  <p className="text-steel text-sm font-body mt-1">Photo is required to build trust.</p>
+                </>
+              )}
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handlePhotoChange} 
+                className="hidden" 
+                accept="image/*"
+              />
             </div>
 
             <div className="flex gap-4 pt-4">
-              <Button variant="ghost" onClick={() => setStep(1)}>Back</Button>
-              <Button type="submit" variant="primary" className="flex-1">Post Relay</Button>
+              <Button variant="ghost" onClick={() => setStep(1)} disabled={createRelay.isPending}>Back</Button>
+              <Button type="submit" variant="primary" className="flex-1" disabled={createRelay.isPending}>
+                {createRelay.isPending ? 'Posting...' : 'Post Relay'}
+              </Button>
             </div>
           </form>
         )}
