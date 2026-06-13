@@ -1,5 +1,15 @@
 import sys
 import os
+import types
+
+# Shim pkg_resources for Vercel (razorpay imports it but Vercel strips setuptools)
+if 'pkg_resources' not in sys.modules:
+    pkg_resources = types.ModuleType('pkg_resources')
+    class _FakeDist:
+        version = "0.0.0"
+    pkg_resources.get_distribution = lambda *a, **kw: _FakeDist()
+    pkg_resources.DistributionNotFound = Exception
+    sys.modules['pkg_resources'] = pkg_resources
 
 # Ensure the api/ directory is on the Python path for Vercel
 api_dir = os.path.dirname(os.path.abspath(__file__))
