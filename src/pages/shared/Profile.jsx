@@ -5,6 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import useAuthStore from '../../store/authStore';
+import { useImpactSummary } from '../../api/impact';
+import { useMyRelays } from '../../api/relays';
 
 // Mock data — in production this would be fetched from /api/profiles/:id
 const getProfileData = (userId) => ({
@@ -43,6 +45,9 @@ export default function Profile() {
   const { id } = useParams();
   const currentUser = useAuthStore(state => state.user);
 
+  const { data: impactData } = useImpactSummary();
+  const { data: relaysData } = useMyRelays();
+
   // Use current user data if viewing own profile, otherwise mock
   const isOwnProfile = !id || id === 'me' || id === currentUser?._id;
   
@@ -51,15 +56,15 @@ export default function Profile() {
     ? { 
         ...currentUser,
         stats: {
-          total_meals: currentUser.total_meals || 0,
-          total_relays: currentUser.total_relays || 0,
-          shelters_reached: 0, // Would need aggregate query for this
-          co2_kg_saved: currentUser.co2_saved || 0,
+          total_meals: impactData?.total_meals_donated || impactData?.total_meals_received || 0,
+          total_relays: currentUser.role === 'donor' ? (impactData?.total_relays_posted || 0) : (impactData?.total_relays_claimed || 0),
+          shelters_reached: impactData?.unique_recipients || impactData?.unique_donors || 0,
+          co2_kg_saved: impactData?.co2_kg_saved || 0,
         },
-        badges: currentUser.badges || [],
-        recent_relays: [], // Would need to fetch from /api/relays
-        city: currentUser.location?.city || 'City not set',
-        state: currentUser.location?.state || 'State not set'
+        badges: impactData?.badges || currentUser.badges || [],
+        recent_relays: (relaysData?.relays || []).filter(r => r.status === 'completed' || r.status === 'claimed').slice(0, 5),
+        city: currentUser.city || 'City not set',
+        state: currentUser.state || 'State not set'
       }
     : getProfileData(id);
 
@@ -141,30 +146,32 @@ export default function Profile() {
       <div className="profile-item" style={{ opacity: 0 }}>
         <Card className="p-6 border-steel/20" hover={false}>
           <h2 className="text-xl font-display font-bold text-white mb-4">🏆 Achievements</h2>
-          <div className="flex flex-wrap gap-4">
-            {profile.badges.map(badge => (
+            {profile.badges.map((badge, i) => (
               <div
-                key={badge.title}
+                key={i}
+                title={badge.desc || badge.description}
                 className="flex flex-col items-center gap-1 p-4 rounded-xl border border-azure/20 bg-azure/5 min-w-[80px]"
               >
                 <span className="text-4xl drop-shadow-[0_0_8px_rgba(89,248,232,0.5)]">{badge.emoji}</span>
-                <span className="text-xs font-bold text-white font-display text-center leading-tight">{badge.title}</span>
+                <span className="text-xs font-bold text-white font-display text-center leading-tight">{badge.title || badge.name}</span>
               </div>
             ))}
           </div>
         </Card>
       </div>
 
-      {/* Recent Relays */}
+      {/* Recent Activity */}
       <div className="profile-item" style={{ opacity: 0 }}>
         <Card className="p-6 border-steel/20" hover={false}>
-          <h2 className="text-xl font-display font-bold text-white mb-4">📋 Recent Relays</h2>
+          <h2 className="text-xl font-display font-bold text-white mb-4 flex items-center gap-2">
+            📋 {profile.role === 'recipient' ? 'Recent Claims' : 'Recent Relays'}
+          </h2>
           <div className="space-y-3">
             {profile.recent_relays.map(relay => (
-              <div key={relay.id} className="flex items-center justify-between py-3 border-b border-steel/10 last:border-0">
+              <div key={relay._id || relay.id} className="flex items-center justify-between py-3 border-b border-steel/10 last:border-0">
                 <div>
                   <div className="text-white font-body font-medium">{relay.food_name}</div>
-                  <div className="text-steel text-sm">{relay.meals} meals · {new Date(relay.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                  <div className="text-steel text-sm">{relay.meals} meals · {new Date(relay.created_at || relay.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                 </div>
                 <Badge variant="completed">Completed</Badge>
               </div>
