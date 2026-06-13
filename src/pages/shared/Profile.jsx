@@ -6,7 +6,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import useAuthStore from '../../store/authStore';
 import { useImpactSummary } from '../../api/impact';
-import { useMyRelays } from '../../api/relays';
+import { useMyRelays, useClaimedRelays } from '../../api/relays';
 
 // Mock data — in production this would be fetched from /api/profiles/:id
 const getProfileData = (userId) => ({
@@ -46,7 +46,9 @@ export default function Profile() {
   const currentUser = useAuthStore(state => state.user);
 
   const { data: impactData } = useImpactSummary();
-  const { data: relaysData } = useMyRelays();
+  const { data: donorRelaysData } = useMyRelays();
+  const { data: recipientRelaysData } = useClaimedRelays();
+  const relaysData = currentUser?.role === 'recipient' ? recipientRelaysData : donorRelaysData;
 
   // Use current user data if viewing own profile, otherwise mock
   const isOwnProfile = !id || id === 'me' || id === currentUser?._id;
@@ -63,8 +65,8 @@ export default function Profile() {
         },
         badges: impactData?.badges || currentUser.badges || [],
         recent_relays: (relaysData?.relays || []).filter(r => r.status === 'completed' || r.status === 'claimed').slice(0, 5),
-        city: currentUser.city || 'City not set',
-        state: currentUser.state || 'State not set'
+        city: currentUser.address?.city || 'City not set',
+        state: currentUser.address?.state || 'State not set'
       }
     : getProfileData(id);
 

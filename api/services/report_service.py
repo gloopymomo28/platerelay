@@ -126,6 +126,7 @@ async def compute_impact_summary(user: dict) -> dict:
         }).to_list(None)
 
         total_meals = calculate_total_meals(claimed)
+        co2_saved = calculate_co2_saved(claimed)
         monthly_stats = build_monthly_stats(claimed, "claimed_at")
 
         unique_donors = set()
@@ -139,6 +140,7 @@ async def compute_impact_summary(user: dict) -> dict:
         return {
             "total_relays_claimed": len(claimed),
             "total_meals_received": total_meals,
+            "co2_kg_saved": co2_saved,
             "unique_donors": len(unique_donors),
             "monthly": monthly_stats,
             "badges": latest_badges,
