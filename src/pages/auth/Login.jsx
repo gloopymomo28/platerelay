@@ -40,15 +40,23 @@ export default function Login() {
     <div className="min-h-screen flex relative overflow-hidden" style={{ background: '#03191E' }}>
       {/* Left — decorative */}
       <div className="hidden lg:flex flex-1 items-center justify-center relative p-16"
-        style={{ background: 'linear-gradient(135deg, rgba(32,164,243,0.1), rgba(89,248,232,0.05))' }}>
+        style={{ background: 'linear-gradient(135deg, rgba(255,122,0,0.05), rgba(0,229,255,0.05))' }}>
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'linear-gradient(rgba(193,207,218,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(193,207,218,0.04) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(255,122,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,122,0,0.03) 1px, transparent 1px)',
           backgroundSize: '50px 50px',
         }} />
         <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #20A4F3, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, #FF7A00, transparent 70%)' }} />
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full opacity-15 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #59F8E8, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, #00E5FF, transparent 70%)' }} />
+
+        {/* Floating foods to match landing vibe */}
+        <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=400&auto=format&fit=crop" 
+             className="absolute top-[15%] right-[15%] w-32 h-32 rounded-full object-cover animate-float"
+             style={{ border: '3px solid #FF9800', boxShadow: '0 0 30px rgba(255,152,0,0.5)' }} alt="" />
+        <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=400&auto=format&fit=crop" 
+             className="absolute bottom-[20%] left-[10%] w-40 h-40 rounded-full object-cover animate-float"
+             style={{ border: '3px solid #00E5FF', boxShadow: '0 0 30px rgba(0,229,255,0.4)', animationDelay: '1s' }} alt="" />
 
         <div className="relative z-10 text-center max-w-sm">
           <div className="text-8xl mb-8">🍽️</div>
@@ -61,7 +69,7 @@ export default function Login() {
           <div className="mt-10 space-y-3 text-sm font-body" style={{ color: 'rgba(193,207,218,0.5)' }}>
             {['25,000+ meals rescued', '150+ verified partners', 'Sub-2-hour pickup windows'].map(item => (
               <div key={item} className="flex items-center gap-2 justify-center">
-                <span style={{ color: '#59F8E8' }}>✓</span> {item}
+                <span style={{ color: '#FF7A00' }}>✓</span> {item}
               </div>
             ))}
           </div>
@@ -73,9 +81,9 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 mb-10 group">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>PR</div>
-            <span className="font-display font-bold text-lg text-white group-hover:text-azure transition-colors">PlateRelay</span>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-sm transition-all shadow-[0_0_15px_rgba(234,88,12,0.3)] group-hover:shadow-[0_0_20px_rgba(234,88,12,0.5)]"
+              style={{ background: 'linear-gradient(135deg, #FF7A00, #EA580C)' }}>PR</div>
+            <span className="font-display font-bold text-lg text-white group-hover:text-orange-400 transition-colors">PlateRelay</span>
           </Link>
 
           <div className="mb-8">
@@ -100,7 +108,7 @@ export default function Login() {
                     background: 'rgba(193,207,218,0.06)',
                     border: errors.email ? '1px solid rgba(148,28,47,0.6)' : '1px solid rgba(193,207,218,0.12)',
                   }}
-                  onFocus={e => { e.target.style.border = '1px solid rgba(32,164,243,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(32,164,243,0.1)'; }}
+                  onFocus={e => { e.target.style.border = '1px solid rgba(255,122,0,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(255,122,0,0.1)'; }}
                   onBlur={e => { e.target.style.border = errors.email ? '1px solid rgba(148,28,47,0.6)' : '1px solid rgba(193,207,218,0.12)'; e.target.style.boxShadow = 'none'; }}
                 />
               </div>
@@ -123,7 +131,7 @@ export default function Login() {
                     background: 'rgba(193,207,218,0.06)',
                     border: errors.password ? '1px solid rgba(148,28,47,0.6)' : '1px solid rgba(193,207,218,0.12)',
                   }}
-                  onFocus={e => { e.target.style.border = '1px solid rgba(32,164,243,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(32,164,243,0.1)'; }}
+                  onFocus={e => { e.target.style.border = '1px solid rgba(255,122,0,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(255,122,0,0.1)'; }}
                   onBlur={e => { e.target.style.border = errors.password ? '1px solid rgba(148,28,47,0.6)' : '1px solid rgba(193,207,218,0.12)'; e.target.style.boxShadow = 'none'; }}
                 />
               </div>
@@ -134,8 +142,8 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 rounded-xl font-display font-bold text-sm flex items-center justify-center gap-2 transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}
+              className="w-full py-4 rounded-xl font-display font-bold text-white text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(234,88,12,0.6)] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              style={{ background: 'linear-gradient(135deg, #FF7A00, #EA580C)', boxShadow: '0 0 20px rgba(234,88,12,0.4)' }}
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
               {isLoading ? 'Signing in...' : 'Sign In'}
@@ -144,7 +152,7 @@ export default function Login() {
 
           <p className="mt-8 text-center text-sm font-body" style={{ color: 'rgba(193,207,218,0.5)' }}>
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium hover:underline transition-colors" style={{ color: '#20A4F3' }}>
+            <Link to="/register" className="font-medium hover:underline transition-colors" style={{ color: '#FF7A00' }}>
               Join the relay →
             </Link>
           </p>
