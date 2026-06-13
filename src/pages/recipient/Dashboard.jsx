@@ -18,13 +18,14 @@ export default function RecipientDashboard() {
   const subscription = user?.subscription || {};
   const planName = (subscription.plan || 'free').charAt(0).toUpperCase() + (subscription.plan || 'free').slice(1);
   const claimsThisMonth = user?.claims_this_month ?? 0;
-  const claimLimit = planName === 'Free' ? 3 : planName === 'Saathi' ? 30 : 999;
-  const claimsRemaining = Math.max(0, claimLimit - claimsThisMonth);
+  const isFree = planName === 'Free';
+  const claimLimit = isFree ? 3 : null; // null = unlimited
+  const claimsRemaining = isFree ? Math.max(0, claimLimit - claimsThisMonth) : null;
 
   const stats = [
     { label: 'Meals Received', value: totalMeals.toLocaleString(), icon: '🍽️', color: '#20A4F3', sub: 'all-time' },
-    { label: 'Claims This Month', value: claimsThisMonth.toString(), icon: '✅', color: '#59F8E8', sub: `${claimsRemaining} remaining` },
-    { label: 'Plan', value: planName, icon: '⭐', color: '#F4A22D', sub: planName === 'Free' ? 'Upgrade to Saathi' : 'Active' },
+    { label: 'Claims This Month', value: claimsThisMonth.toString(), icon: '✅', color: '#59F8E8', sub: isFree ? `${claimsRemaining} remaining` : 'Unlimited ✨' },
+    { label: 'Plan', value: planName, icon: '⭐', color: '#F4A22D', sub: isFree ? 'Upgrade to Saathi' : 'Active' },
     { label: 'Partner Donors', value: partnerDonors.toString(), icon: '🏢', color: '#4ade80', sub: 'active' },
   ];
 
@@ -95,12 +96,14 @@ export default function RecipientDashboard() {
               style={{ background: 'rgba(244,162,45,0.15)' }}>⭐</div>
             <div>
               <div className="font-display font-bold text-white text-sm">
-                {claimsRemaining > 0
-                  ? `You have ${claimsRemaining} claim${claimsRemaining !== 1 ? 's' : ''} remaining this month`
-                  : 'You have used all your claims this month'}
+                {isFree
+                  ? (claimsRemaining > 0
+                    ? `You have ${claimsRemaining} claim${claimsRemaining !== 1 ? 's' : ''} remaining this month`
+                    : 'You have used all your claims this month')
+                  : `You've claimed ${claimsThisMonth} meal${claimsThisMonth !== 1 ? 's' : ''} this month 🎉`}
               </div>
               <div className="text-xs font-body mt-0.5" style={{ color: 'rgba(193,207,218,0.6)' }}>
-                {planName} plan: {claimLimit} claims/month
+                {isFree ? `${planName} plan: ${claimLimit} claims/month` : `${planName} plan: Unlimited claims`}
               </div>
             </div>
           </div>

@@ -479,7 +479,7 @@ async def claim_relay(
             detail="Someone beat you to it! This relay was just claimed. 🏃💨",
         )
 
-    # Increment claim counter for all tiers
+    # Increment claim counter for all plans (used for dashboard stats)
     await db.users.update_one(
         {"_id": recipient["_id"]},
         {"$inc": {"claims_this_month": 1}},
