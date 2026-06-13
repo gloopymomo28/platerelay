@@ -6,7 +6,6 @@ export default function Landing() {
   const heroRef = useRef(null);
 
   useEffect(() => {
-    // Stagger hero elements in
     anime({
       targets: '.hero-element',
       translateY: [40, 0],
@@ -72,8 +71,8 @@ export default function Landing() {
         }} />
 
         {/* Pill badge */}
-        <div className="hero-element opacity-0 mb-6">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border"
+        <div className="hero-element opacity-0 mb-8">
+          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border"
             style={{ background: 'rgba(32,164,243,0.1)', borderColor: 'rgba(32,164,243,0.3)', color: '#20A4F3' }}>
             <span className="w-2 h-2 rounded-full bg-cyan animate-pulse inline-block" />
             Zero-waste food logistics platform
@@ -81,8 +80,8 @@ export default function Landing() {
         </div>
 
         {/* Headline */}
-        <h1 className="hero-element opacity-0 font-display font-bold leading-[1.05] mb-6"
-          style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)' }}>
+        <h1 className="hero-element opacity-0 font-display font-bold leading-[1.08] mb-8"
+          style={{ fontSize: 'clamp(2.5rem, 7vw, 5rem)' }}>
           Because leftovers deserve<br />
           <span style={{
             background: 'linear-gradient(135deg, #20A4F3 0%, #59F8E8 50%, #F4A22D 100%)',
@@ -90,12 +89,12 @@ export default function Landing() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
           }}>
-            a standing ovation 🍽️
+            a standing ovation
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="hero-element opacity-0 font-body text-lg md:text-xl max-w-2xl mb-10 leading-relaxed"
+        <p className="hero-element opacity-0 font-body text-lg md:text-xl max-w-2xl mb-12 leading-relaxed"
           style={{ color: '#C1CFDA' }}>
           Every surplus meal finds its next table. Connect restaurants with local shelters
           in under 15 minutes — real-time, photo-first, zero bureaucracy.
@@ -107,7 +106,7 @@ export default function Landing() {
             <button className="group relative px-8 py-4 rounded-2xl font-display font-bold text-base overflow-hidden transition-all duration-300 hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
               <span className="relative z-10 flex items-center gap-2">
-                🍽️ Start Donating
+                Start Donating
                 <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
               </span>
             </button>
@@ -115,17 +114,17 @@ export default function Landing() {
           <Link to="/register">
             <button className="px-8 py-4 rounded-2xl font-display font-bold text-base transition-all duration-300 hover:scale-105 hover:border-azure/60"
               style={{ border: '1px solid rgba(193,207,218,0.25)', color: '#C1CFDA', background: 'rgba(193,207,218,0.05)' }}>
-              🤝 I Represent a Shelter
+              I Represent a Shelter
             </button>
           </Link>
         </div>
 
         {/* Social proof strip */}
-        <div className="hero-element opacity-0 mt-16 flex flex-wrap justify-center gap-6 text-sm" style={{ color: 'rgba(193,207,218,0.6)' }}>
-          <span>✓ 100% Free for donors</span>
-          <span>✓ Verified shelters only</span>
-          <span>✓ Sub-2-hour coordination</span>
-          <span>✓ India-first, UPI payments</span>
+        <div className="hero-element opacity-0 mt-16 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm" style={{ color: 'rgba(193,207,218,0.6)' }}>
+          <span>100% Free for donors</span>
+          <span>Verified shelters only</span>
+          <span>Sub-2-hour coordination</span>
+          <span>India-first, UPI payments</span>
         </div>
 
         {/* Scroll indicator */}
@@ -138,18 +137,17 @@ export default function Landing() {
       </section>
 
       {/* ─── STATS ─── */}
-      <section className="py-20 relative">
+      <section className="py-24 relative">
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent, rgba(32,164,243,0.04), transparent)' }} />
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-3 gap-4 md:gap-8">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
-              { id: 'counter-meals', suffix: '+', label: 'Meals Rescued', color: '#59F8E8', icon: '🍛' },
-              { id: 'counter-co2', suffix: ' kg', label: 'CO₂ Reduced', color: '#20A4F3', icon: '🌱' },
-              { id: 'counter-partners', suffix: '+', label: 'Active Partners', color: '#F4A22D', icon: '🤝' },
+              { id: 'counter-meals', suffix: '+', label: 'Meals Rescued', color: '#59F8E8' },
+              { id: 'counter-co2', suffix: ' kg', label: 'CO\u2082 Reduced', color: '#20A4F3' },
+              { id: 'counter-partners', suffix: '+', label: 'Active Partners', color: '#F4A22D' },
             ].map(stat => (
-              <div key={stat.id} className="text-center group">
-                <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className="font-display font-bold mb-1" style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)', color: stat.color }}>
+              <div key={stat.id} className="text-center">
+                <div className="font-display font-bold mb-2" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', color: stat.color }}>
                   <span id={stat.id}>0</span>{stat.suffix}
                 </div>
                 <div className="text-xs md:text-sm font-body uppercase tracking-widest" style={{ color: 'rgba(193,207,218,0.5)' }}>
@@ -168,41 +166,31 @@ export default function Landing() {
             <span className="text-sm font-body uppercase tracking-widest mb-4 block" style={{ color: '#20A4F3' }}>
               The Process
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold">How PlateRelay Works</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">How PlateRelay Works</h2>
             <p className="mt-4 font-body text-lg max-w-xl mx-auto" style={{ color: '#C1CFDA' }}>
               From kitchen to shelter in under two hours. Every time.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connector line (desktop) */}
-            <div className="hidden md:block absolute top-16 left-1/6 right-1/6 h-px"
-              style={{ background: 'linear-gradient(90deg, transparent, #20A4F3, #59F8E8, #F4A22D, transparent)' }} />
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 step: '01',
-                icon: '📸',
                 title: 'Snap & Post',
                 desc: 'Donors photograph surplus food, set a pickup window, and confirm food safety. Done in 30 seconds.',
                 color: '#20A4F3',
-                glow: 'rgba(32,164,243,0.3)',
               },
               {
                 step: '02',
-                icon: '⚡',
                 title: 'Instant Match',
                 desc: 'Verified shelters within radius get an immediate email. First to claim, wins the relay.',
                 color: '#59F8E8',
-                glow: 'rgba(89,248,232,0.3)',
               },
               {
                 step: '03',
-                icon: '🤝',
                 title: 'Quick Pickup',
                 desc: 'Shelter arrives before the window closes, donor gets a completion confirmation. Zero waste.',
                 color: '#F4A22D',
-                glow: 'rgba(244,162,45,0.3)',
               },
             ].map((item, i) => (
               <div key={i} className="relative group">
@@ -218,11 +206,11 @@ export default function Landing() {
                   <div className="text-xs font-bold font-display mb-6" style={{ color: item.color, letterSpacing: '0.15em' }}>
                     STEP {item.step}
                   </div>
-                  {/* Icon */}
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-all duration-300"
-                    style={{ background: item.color + '15', boxShadow: `0 0 0 0 ${item.glow}` }}
+                  {/* Icon circle */}
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                    style={{ background: item.color + '15' }}
                   >
-                    {item.icon}
+                    <div className="w-3 h-3 rounded-full" style={{ background: item.color }} />
                   </div>
                   <h3 className="text-xl font-display font-bold mb-3">{item.title}</h3>
                   <p className="font-body leading-relaxed text-sm" style={{ color: '#C1CFDA' }}>{item.desc}</p>
@@ -234,19 +222,18 @@ export default function Landing() {
       </section>
 
       {/* ─── IMPACT STRIP ─── */}
-      <section className="py-16 px-4 relative overflow-hidden">
+      <section className="py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(135deg, rgba(32,164,243,0.08) 0%, rgba(89,248,232,0.05) 50%, rgba(244,162,45,0.05) 100%)',
         }} />
         <div className="max-w-4xl mx-auto relative">
-          <div className="rounded-3xl p-8 md:p-12 text-center"
+          <div className="rounded-3xl p-10 md:p-14 text-center"
             style={{ border: '1px solid rgba(32,164,243,0.2)', background: 'rgba(32,164,243,0.06)' }}>
-            <div className="text-5xl mb-4">🌍</div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 leading-snug">
               India wastes <span style={{ color: '#941C2F' }}>68 million tonnes</span> of food yearly.<br />
               <span style={{ color: '#59F8E8' }}>We're fixing the coordination gap.</span>
             </h2>
-            <p className="font-body text-base max-w-2xl mx-auto" style={{ color: '#C1CFDA' }}>
+            <p className="font-body text-base max-w-2xl mx-auto leading-relaxed" style={{ color: '#C1CFDA' }}>
               Restaurants can't call every shelter every night. Shelters can't wait by the phone.
               PlateRelay bridges the sub-2-hour window where food goes from surplus to served.
             </p>
@@ -256,8 +243,8 @@ export default function Landing() {
 
       {/* ─── PRICING ─── */}
       <section className="py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
             <span className="text-sm font-body uppercase tracking-widest mb-4 block" style={{ color: '#F4A22D' }}>
               Pricing
             </span>
@@ -267,11 +254,10 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {/* Free */}
-            <div className="rounded-2xl p-8 flex flex-col"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            {/* Free Tier */}
+            <div className="rounded-2xl p-8 flex flex-col h-full"
               style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.12)' }}>
-              <div className="text-2xl mb-2">🤲</div>
               <h3 className="text-xl font-display font-bold mb-1">Free Tier</h3>
               <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}>Perfect for small shelters getting started</p>
               <div className="mb-8">
@@ -294,18 +280,17 @@ export default function Landing() {
             </div>
 
             {/* Saathi — highlighted */}
-            <div className="rounded-2xl p-8 flex flex-col relative md:-translate-y-4"
+            <div className="rounded-2xl p-8 flex flex-col relative h-full"
               style={{
                 background: 'linear-gradient(160deg, rgba(32,164,243,0.15), rgba(89,248,232,0.08))',
                 border: '1px solid rgba(32,164,243,0.4)',
                 boxShadow: '0 0 40px rgba(32,164,243,0.15), 0 20px 60px rgba(0,0,0,0.3)',
               }}>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold font-display"
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold font-display"
                 style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
-                ★ MOST POPULAR
+                MOST POPULAR
               </div>
-              <div className="text-2xl mb-2">⚡</div>
-              <h3 className="text-xl font-display font-bold mb-1">Saathi Plan</h3>
+              <h3 className="text-xl font-display font-bold mb-1 mt-2">Saathi Plan</h3>
               <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}><em>"Saathi" = companion in Hindi</em></p>
               <div className="mb-8">
                 <span className="text-5xl font-bold font-display" style={{ color: '#20A4F3' }}>₹149</span>
@@ -327,9 +312,8 @@ export default function Landing() {
             </div>
 
             {/* Daan Pro */}
-            <div className="rounded-2xl p-8 flex flex-col"
+            <div className="rounded-2xl p-8 flex flex-col h-full"
               style={{ background: 'rgba(244,162,45,0.06)', border: '1px solid rgba(244,162,45,0.25)' }}>
-              <div className="text-2xl mb-2">🏆</div>
               <h3 className="text-xl font-display font-bold mb-1">Daan Pro</h3>
               <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}>For corporate donors who need CSR proof</p>
               <div className="mb-8">
@@ -360,14 +344,13 @@ export default function Landing() {
           background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(32,164,243,0.08), transparent)',
         }} />
         <div className="max-w-3xl mx-auto relative">
-          <div className="text-6xl mb-6">🍽️</div>
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">
-            The kitchen's quiet.<br />
-            <span className="font-accent text-5xl md:text-6xl" style={{ color: '#59F8E8' }}>
-              But not for long.
-            </span>
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 leading-tight">
+            The kitchen's quiet.
           </h2>
-          <p className="font-body text-lg mb-10" style={{ color: '#C1CFDA' }}>
+          <p className="font-accent text-4xl md:text-5xl mb-8" style={{ color: '#59F8E8' }}>
+            But not for long.
+          </p>
+          <p className="font-body text-lg mb-12" style={{ color: '#C1CFDA' }}>
             Join 150+ organizations already passing the baton on food waste.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -380,7 +363,7 @@ export default function Landing() {
             <Link to="/leaderboard">
               <button className="px-10 py-4 rounded-2xl font-display font-bold text-base transition-all hover:scale-105"
                 style={{ border: '1px solid rgba(193,207,218,0.2)', color: '#C1CFDA', background: 'rgba(193,207,218,0.05)' }}>
-                View Leaderboard 🏆
+                View Leaderboard
               </button>
             </Link>
           </div>
@@ -388,7 +371,7 @@ export default function Landing() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="py-12 px-4 border-t" style={{ borderColor: 'rgba(193,207,218,0.1)' }}>
+      <footer className="py-10 px-4 border-t" style={{ borderColor: 'rgba(193,207,218,0.1)' }}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
@@ -398,7 +381,7 @@ export default function Landing() {
             <span className="font-display font-bold text-white">PlateRelay</span>
           </div>
           <p className="font-body text-sm text-center" style={{ color: 'rgba(193,207,218,0.5)' }}>
-            Built with ❤️ for Hackprix 2026 · Every surplus meal finds its next table.
+            Built for Hackprix 2026 · Every surplus meal finds its next table.
           </p>
           <div className="flex gap-6 text-sm font-body" style={{ color: 'rgba(193,207,218,0.5)' }}>
             <Link to="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>

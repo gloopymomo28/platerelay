@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@theme inline {
+@theme {
   --color-steel: #C1CFDA;
   --color-azure: #20A4F3;
   --color-cyan: #59F8E8;
@@ -22,12 +22,7 @@
   --font-accent: 'Caveat', cursive;
 }
 
-/* Base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 html {
   scroll-behavior: smooth;
