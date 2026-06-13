@@ -70,6 +70,7 @@ export const useClaimRelay = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['relays'] });
+      queryClient.invalidateQueries({ queryKey: ['impact', 'summary'] });
     },
   });
 };
@@ -83,6 +84,7 @@ export const useUnclaimRelay = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['relays'] });
+      queryClient.invalidateQueries({ queryKey: ['impact', 'summary'] });
     },
   });
 };
@@ -96,6 +98,7 @@ export const useConfirmRelay = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['relays'] });
+      queryClient.invalidateQueries({ queryKey: ['impact', 'summary'] });
     },
   });
 };
