@@ -72,59 +72,72 @@ export default function Landing() {
         className="min-h-screen"
         title={
           <>
-            Because leftovers deserve<br />
+            Because leftovers<br />
+            deserve a<br />
             <span style={{
-              background: 'linear-gradient(135deg, #20A4F3 0%, #59F8E8 50%, #F4A22D 100%)',
+              background: 'linear-gradient(135deg, #FF7A00 0%, #FF5200 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
+              paddingRight: '0.1em'
             }}>
-              a standing ovation
+              standing ovation
             </span>
           </>
         }
-        description="Every surplus meal finds its next table. Connect restaurants with local shelters in under 15 minutes — real-time, photo-first, zero bureaucracy."
+        description="PlateRelay connects restaurants, events, and individuals with surplus, delicious meals to communities in need. Reduce waste, feed hope—seamlessly."
         images={[
           {
             src: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=400&auto=format&fit=crop',
             alt: 'Biryani in a traditional pot',
-            className: 'w-40 sm:w-56 md:w-64 lg:w-72 top-10 left-4 sm:left-10 md:top-20 md:left-20 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
+            className: 'w-32 sm:w-48 lg:w-56 top-[15%] left-[5%] md:top-[10%] md:left-[10%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #FF9800', boxShadow: '0 0 30px rgba(255,152,0,0.5)' }
           },
           {
-            src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=400&auto=format&fit=crop',
-            alt: 'Crispy Samosas',
-            className: 'w-28 sm:w-36 md:w-48 top-10 right-4 sm:right-10 md:top-16 md:right-16 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
+            src: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=400&auto=format&fit=crop',
+            alt: 'Palak Paneer',
+            className: 'w-32 sm:w-48 lg:w-56 top-[15%] right-[5%] md:top-[10%] md:right-[10%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #00E5FF', boxShadow: '0 0 30px rgba(0,229,255,0.4)', animationDelay: '1s' }
           },
           {
             src: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=80&w=400&auto=format&fit=crop',
             alt: 'Naan bread and curry',
-            className: 'w-32 sm:w-40 md:w-56 bottom-8 right-5 sm:right-10 md:bottom-16 md:right-20 animate-float rounded-full shadow-2xl object-cover aspect-square border-4 border-midnight/50',
-          },
-           {
-            src: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=400&auto=format&fit=crop',
-            alt: 'Indian Spices',
-            className: 'w-20 sm:w-28 top-1/4 left-1/3 animate-float rounded-full shadow-xl object-cover aspect-square border-2 border-midnight/30',
+            className: 'w-40 sm:w-56 lg:w-64 top-1/2 -translate-y-[40%] left-0 md:left-[2%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #FF5722', boxShadow: '0 0 35px rgba(255,87,34,0.5)', animationDelay: '2s' }
           },
           {
-            src: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=400&auto=format&fit=crop',
-            alt: 'Idli with sambhar',
-            className: 'w-20 sm:w-28 bottom-1/4 left-1/4 animate-float rounded-full shadow-xl object-cover aspect-square border-2 border-midnight/30',
+            src: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?q=80&w=400&auto=format&fit=crop',
+            alt: 'Tandoori Chicken',
+            className: 'w-36 sm:w-52 lg:w-60 top-1/2 -translate-y-[20%] right-0 md:right-[2%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #FF3D00', boxShadow: '0 0 35px rgba(255,61,0,0.5)', animationDelay: '1.5s' }
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=400&auto=format&fit=crop',
+            alt: 'Green dish',
+            className: 'w-24 sm:w-32 lg:w-40 bottom-[10%] left-[25%] md:left-[30%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #00BFA5', boxShadow: '0 0 25px rgba(0,191,165,0.5)', animationDelay: '2.5s' }
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=400&auto=format&fit=crop',
+            alt: 'Samosas',
+            className: 'w-24 sm:w-32 lg:w-40 bottom-[10%] right-[25%] md:right-[30%] animate-float rounded-full object-cover aspect-square',
+            style: { border: '3px solid #FFB300', boxShadow: '0 0 25px rgba(255,179,0,0.5)', animationDelay: '0.5s' }
           },
         ]}
       >
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-8">
           <Link to="/register">
-            <button className="group relative px-8 py-4 rounded-2xl font-display font-bold text-base overflow-hidden transition-all duration-300 hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
+            <button className="group relative px-8 py-3.5 rounded-full font-body font-medium text-white transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #FF7A00, #EA580C)', boxShadow: '0 0 20px rgba(234,88,12,0.5)' }}>
               <span className="relative z-10 flex items-center gap-2">
                 Start Donating
-                <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                <span className="group-hover:translate-x-1 transition-transform inline-block">›</span>
               </span>
             </button>
           </Link>
           <Link to="/register">
-            <button className="px-8 py-4 rounded-2xl font-display font-bold text-base transition-all duration-300 hover:scale-105 hover:border-azure/60"
-              style={{ border: '1px solid rgba(193,207,218,0.25)', color: '#C1CFDA', background: 'rgba(193,207,218,0.05)' }}>
+            <button className="px-8 py-3.5 rounded-full font-body font-medium text-white transition-all duration-300 hover:scale-105"
+              style={{ background: 'rgba(15,118,110,0.4)', border: '1px solid #14B8A6', boxShadow: '0 0 20px rgba(20,184,166,0.3)' }}>
               I Represent a Shelter
             </button>
           </Link>
@@ -155,61 +168,53 @@ export default function Landing() {
       </section>
 
       {/* ─── HOW IT WORKS ─── */}
-      <section className="py-28 px-4">
+      <section className="py-24 px-4 bg-midnight">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
-            <span className="text-sm font-body uppercase tracking-widest mb-4 block" style={{ color: '#20A4F3' }}>
-              The Process
-            </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">How PlateRelay Works</h2>
-            <p className="mt-4 font-body text-lg max-w-xl mx-auto" style={{ color: '#C1CFDA' }}>
-              From kitchen to shelter in under two hours. Every time.
-            </p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-white">How PlateRelay Works</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-16 md:gap-32">
             {[
               {
-                step: '01',
-                title: 'Snap & Post',
-                desc: 'Donors photograph surplus food, set a pickup window, and confirm food safety. Done in 30 seconds.',
-                color: '#20A4F3',
+                label: 'surplus food',
+                color: '#FF7A00',
+                icon: (
+                  <svg className="w-12 h-12 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#FF7A00' }}>
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <path d="M6 12v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                    <path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z" />
+                  </svg>
+                )
               },
               {
-                step: '02',
-                title: 'Instant Match',
-                desc: 'Verified shelters within radius get an immediate email. First to claim, wins the relay.',
-                color: '#59F8E8',
+                label: 'rescue',
+                color: '#FF7A00',
+                icon: (
+                  <svg className="w-12 h-12 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#FF7A00' }}>
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                    <path d="M12 22v-7" />
+                    <path d="M9 19h6" />
+                  </svg>
+                )
               },
               {
-                step: '03',
-                title: 'Quick Pickup',
-                desc: 'Shelter arrives before the window closes, donor gets a completion confirmation. Zero waste.',
-                color: '#F4A22D',
+                label: 'delivery',
+                color: '#00E5FF',
+                icon: (
+                  <svg className="w-12 h-12 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#00E5FF' }}>
+                    <circle cx="7" cy="17" r="2" />
+                    <circle cx="17" cy="17" r="2" />
+                    <path d="M5 17H3v-6l2-5h9v11h-2" />
+                    <path d="M14 17h-1" />
+                    <path d="M14 6h4l3 5v6h-2" />
+                  </svg>
+                )
               },
             ].map((item, i) => (
-              <div key={i} className="relative group">
-                <div className="rounded-2xl p-8 h-full transition-all duration-300 hover:-translate-y-2"
-                  style={{
-                    background: 'rgba(193,207,218,0.04)',
-                    border: '1px solid rgba(193,207,218,0.1)',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = item.color + '50'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(193,207,218,0.1)'}
-                >
-                  {/* Step number */}
-                  <div className="text-xs font-bold font-display mb-6" style={{ color: item.color, letterSpacing: '0.15em' }}>
-                    STEP {item.step}
-                  </div>
-                  {/* Icon circle */}
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-                    style={{ background: item.color + '15' }}
-                  >
-                    <div className="w-3 h-3 rounded-full" style={{ background: item.color }} />
-                  </div>
-                  <h3 className="text-xl font-display font-bold mb-3">{item.title}</h3>
-                  <p className="font-body leading-relaxed text-sm" style={{ color: '#C1CFDA' }}>{item.desc}</p>
-                </div>
+              <div key={i} className="flex flex-col items-center">
+                {item.icon}
+                <div className="text-xl font-display font-medium text-white">{item.label}</div>
               </div>
             ))}
           </div>

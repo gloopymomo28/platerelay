@@ -70,7 +70,7 @@ export function FloatingFoodHero({
             src={image.src}
             alt={image.alt}
             className={cn('absolute object-contain', image.className)}
-            style={{ animationDelay: `${index * 300}ms` }}
+            style={{ animationDelay: `${index * 300}ms`, ...image.style }}
           />
         ))}
       </div>
