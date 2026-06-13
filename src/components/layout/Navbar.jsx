@@ -97,7 +97,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img src="/pr-logo.png" alt="PlateRelay Logo" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
+            <img src="/pr-logo.jpg" alt="PlateRelay Logo" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
             <span className="font-display font-bold text-xl text-white group-hover:text-[#FF7A00] transition-colors">
               PlateRelay
             </span>
