@@ -5,6 +5,7 @@ All email templates with PlateRelay branding, sent via Resend.
 
 import resend
 from config import get_settings
+from datetime import timedelta
 
 _configured = False
 

@@ -31,6 +31,21 @@ def _serialize_relay(relay: dict) -> dict:
         relay["donor_id"] = str(relay["donor_id"])
     if isinstance(relay.get("claimed_by"), ObjectId):
         relay["claimed_by"] = str(relay["claimed_by"])
+        
+    # Force UTC format for datetime fields to prevent frontend timezone bugs
+    if "pickup_window" in relay:
+        if isinstance(relay["pickup_window"].get("start"), datetime):
+            relay["pickup_window"]["start"] = relay["pickup_window"]["start"].isoformat() + "Z"
+        if isinstance(relay["pickup_window"].get("end"), datetime):
+            relay["pickup_window"]["end"] = relay["pickup_window"]["end"].isoformat() + "Z"
+            
+    if isinstance(relay.get("created_at"), datetime):
+        relay["created_at"] = relay["created_at"].isoformat() + "Z"
+    if isinstance(relay.get("updated_at"), datetime):
+        relay["updated_at"] = relay["updated_at"].isoformat() + "Z"
+    if isinstance(relay.get("claimed_at"), datetime):
+        relay["claimed_at"] = relay["claimed_at"].isoformat() + "Z"
+        
     return relay
 
 
