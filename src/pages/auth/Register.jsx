@@ -178,8 +178,8 @@ export default function Register() {
 
       <div className="w-full max-w-2xl relative">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 mb-8 group">
-          <img src="/pr-logo-new.png" alt="PlateRelay Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
+        <Link to="/" className="flex items-center gap-1 mb-8 group">
+          <img src="/pr-logo-new.png" alt="PlateRelay Logo" className="w-24 h-24 -ml-4 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all scale-125" />
           <span className="font-display font-bold text-2xl text-white group-hover:text-[#FF7A00] transition-colors">PlateRelay</span>
         </Link>
 
