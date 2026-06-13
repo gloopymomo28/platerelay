@@ -56,7 +56,7 @@ export default function Register() {
   const registerAction = useAuthStore(state => state.register);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { role: 'donor' }
   });
@@ -87,9 +87,28 @@ export default function Register() {
     setIsLocating(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCoordinates([position.coords.longitude, position.coords.latitude]);
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setCoordinates([lng, lat]);
           toast.success("GPS Location acquired! 📍");
+          
+          // Reverse geocode to autofill address
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+            const data = await res.json();
+            if (data && data.address) {
+              const addr = data.address;
+              if (addr.road || addr.suburb) setValue('street', addr.road || addr.suburb || '');
+              if (addr.city || addr.town) setValue('city', addr.city || addr.town || '');
+              if (addr.state) setValue('state', addr.state || '');
+              if (addr.postcode) setValue('pincode', addr.postcode || '');
+              toast.success("Address autofilled from location! ✨");
+            }
+          } catch (e) {
+            console.error('Reverse geocoding failed', e);
+          }
+          
           setIsLocating(false);
         },
         (error) => {
