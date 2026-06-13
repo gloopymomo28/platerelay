@@ -154,8 +154,16 @@ export default function BrowseListings() {
                   
                   return (
                     <Card key={relay.id} className="p-0 border-steel/20 bg-midnight/50 flex flex-col sm:flex-row hover:border-azure/30 transition-all hover:-translate-y-1 shadow-lg">
-                      <div className="w-full sm:w-40 h-40 sm:h-auto bg-steel/10 flex items-center justify-center text-4xl border-r border-steel/10">
-                        {categoryEmoji[relay.category] || '🍱'}
+                      <div className="w-full sm:w-40 h-40 sm:h-auto bg-steel/10 flex items-center justify-center text-4xl border-r border-steel/10 overflow-hidden shrink-0">
+                        {relay.photo?.thumbnail_url || relay.photo?.cloudinary_url ? (
+                          <img 
+                            src={relay.photo.thumbnail_url || relay.photo.cloudinary_url} 
+                            alt={relay.food_name} 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          categoryEmoji[relay.category] || '🍱'
+                        )}
                       </div>
                       <div className="p-5 flex-1 flex flex-col">
                         <div className="flex justify-between items-start mb-2">
