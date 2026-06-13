@@ -150,9 +150,24 @@ def send_new_relay_email(to_email: str, relay: dict, distance_km: float):
     start = window.get("start", "")
     end = window.get("end", "")
 
+    from datetime import datetime, timedelta
+    
+    if isinstance(start, str):
+        try:
+            start = datetime.fromisoformat(start.replace("Z", "+00:00"))
+        except ValueError:
+            pass
+    if isinstance(end, str):
+        try:
+            end = datetime.fromisoformat(end.replace("Z", "+00:00"))
+        except ValueError:
+            pass
+
     if hasattr(start, "strftime"):
+        start = start + timedelta(hours=5, minutes=30)
         start = start.strftime("%I:%M %p")
     if hasattr(end, "strftime"):
+        end = end + timedelta(hours=5, minutes=30)
         end = end.strftime("%I:%M %p")
 
     body = f"""
@@ -201,9 +216,24 @@ def send_relay_claimed_email(
     start = window.get("start", "")
     end = window.get("end", "")
 
+    from datetime import datetime, timedelta
+    
+    if isinstance(start, str):
+        try:
+            start = datetime.fromisoformat(start.replace("Z", "+00:00"))
+        except ValueError:
+            pass
+    if isinstance(end, str):
+        try:
+            end = datetime.fromisoformat(end.replace("Z", "+00:00"))
+        except ValueError:
+            pass
+
     if hasattr(start, "strftime"):
+        start = start + timedelta(hours=5, minutes=30)
         start = start.strftime("%I:%M %p")
     if hasattr(end, "strftime"):
+        end = end + timedelta(hours=5, minutes=30)
         end = end.strftime("%I:%M %p")
 
     body = f"""
