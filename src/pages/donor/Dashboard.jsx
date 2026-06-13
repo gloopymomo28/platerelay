@@ -31,13 +31,13 @@ export default function DonorDashboard() {
 
   const userBadges = user?.badges || impactData?.badges || [];
   const badgeMap = {
-    first_relay:       { emoji: '🌱', title: 'First Relay',   glow: 'rgba(89,248,232,0.6)' },
-    hunger_hero:       { emoji: '🦸', title: 'Hunger Hero',   glow: 'rgba(244,162,45,0.6)' },
-    food_champion:     { emoji: '🏅', title: 'Food Champ',    glow: 'rgba(32,164,243,0.6)' },
-    platerelay_legend: { emoji: '🏆', title: 'Legend',         glow: 'rgba(148,28,47,0.6)' },
-    consistency_king:  { emoji: '👑', title: 'Consistency',    glow: 'rgba(244,162,45,0.6)' },
-    community_pillar:  { emoji: '🏛️', title: 'Community',     glow: 'rgba(89,248,232,0.6)' },
-    century_club:      { emoji: '💯', title: 'Century Club',   glow: 'rgba(32,164,243,0.6)' },
+    first_relay:       { emoji: '🌱', title: 'First Relay',   glow: 'rgba(89,248,232,0.6)', desc: 'Completed your first food relay!' },
+    hunger_hero:       { emoji: '🦸', title: 'Hunger Hero',   glow: 'rgba(244,162,45,0.6)', desc: '10 completed relays' },
+    food_champion:     { emoji: '🏅', title: 'Food Champ',    glow: 'rgba(32,164,243,0.6)', desc: '25 completed relays' },
+    platerelay_legend: { emoji: '🏆', title: 'Legend',         glow: 'rgba(148,28,47,0.6)', desc: '50 completed relays' },
+    consistency_king:  { emoji: '👑', title: 'Consistency',    glow: 'rgba(244,162,45,0.6)', desc: '7 consecutive days with relays' },
+    community_pillar:  { emoji: '🏛️', title: 'Community',     glow: 'rgba(89,248,232,0.6)', desc: 'Donated to 10+ unique recipients' },
+    century_club:      { emoji: '💯', title: 'Century Club',   glow: 'rgba(32,164,243,0.6)', desc: '100+ total meals donated' },
   };
 
   const allBadges = Object.entries(badgeMap).map(([key, meta]) => ({
@@ -177,7 +177,7 @@ export default function DonorDashboard() {
           <h2 className="text-2xl font-display font-bold text-white mb-4">Impact Badges</h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
             {allBadges.map(badge => (
-              <div key={badge.title}
+              <div key={badge.title} title={badge.desc}
                 className={`flex-shrink-0 text-center p-5 rounded-2xl transition-all ${badge.earned ? 'hover:-translate-y-1' : 'opacity-30 grayscale'}`}
                 style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.08)', minWidth: '110px' }}>
                 <div className="text-4xl mb-2" style={badge.earned ? { filter: `drop-shadow(0 0 10px ${badge.glow})` } : {}}>

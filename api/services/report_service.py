@@ -107,12 +107,16 @@ async def compute_impact_summary(user: dict) -> dict:
             if r.get("claimed_by"):
                 unique_recipients.add(str(r["claimed_by"]))
 
+        from services.badge_service import get_user_badges
+        latest_badges = await get_user_badges(user)
+
         return {
             "total_relays_posted": len(relays),
             "total_meals_donated": total_meals,
             "co2_kg_saved": co2_saved,
             "unique_recipients": len(unique_recipients),
             "monthly": monthly_stats,
+            "badges": latest_badges,
             "message": "You're making a real impact! Every meal counts. 🌍💚",
         }
 
@@ -129,11 +133,15 @@ async def compute_impact_summary(user: dict) -> dict:
             if r.get("donor_id"):
                 unique_donors.add(str(r["donor_id"]))
 
+        from services.badge_service import get_user_badges
+        latest_badges = await get_user_badges(user)
+
         return {
             "total_relays_claimed": len(claimed),
             "total_meals_received": total_meals,
             "unique_donors": len(unique_donors),
             "monthly": monthly_stats,
+            "badges": latest_badges,
             "message": "Keep claiming — every relay brings a smile. 😊",
         }
 
