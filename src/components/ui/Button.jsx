@@ -22,15 +22,17 @@ const Button = forwardRef(({
   variant = 'primary',
   size = 'md',
   loading = false,
+  isLoading = false,
   disabled = false,
   className = '',
   icon: Icon,
   ...props
 }, ref) => {
+  const isSpinning = loading || isLoading;
   return (
     <button
       ref={ref}
-      disabled={disabled || loading}
+      disabled={disabled || isSpinning}
       className={`
         ${variants[variant]}
         ${sizes[size]}
@@ -43,7 +45,7 @@ const Button = forwardRef(({
       `}
       {...props}
     >
-      {loading ? (
+      {isSpinning ? (
         <Loader2 className="w-4 h-4 animate-spin" />
       ) : Icon ? (
         <Icon className="w-4 h-4" />
@@ -55,3 +57,4 @@ const Button = forwardRef(({
 
 Button.displayName = 'Button';
 export default Button;
+export { Button };

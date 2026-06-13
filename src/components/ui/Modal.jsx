@@ -104,3 +104,4 @@ const Modal = ({
 };
 
 export default Modal;
+export { Modal };

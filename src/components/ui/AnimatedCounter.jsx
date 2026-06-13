@@ -54,3 +54,4 @@ const AnimatedCounter = ({
 };
 
 export default AnimatedCounter;
+export { AnimatedCounter };

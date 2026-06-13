@@ -54,7 +54,7 @@ const Navbar = () => {
     if (user.role === 'donor') {
       return [
         { to: '/donor/dashboard', label: 'Dashboard' },
-        { to: '/donor/post-relay', label: 'Post Relay' },
+        { to: '/donor/post', label: 'Post Relay' },
         { to: '/donor/relays', label: 'My Relays' },
         { to: '/donor/impact', label: 'Impact' },
       ];
@@ -62,7 +62,7 @@ const Navbar = () => {
     if (user.role === 'recipient') {
       return [
         { to: '/recipient/dashboard', label: 'Dashboard' },
-        { to: '/recipient/listings', label: 'Browse' },
+        { to: '/recipient/browse', label: 'Browse' },
         { to: '/recipient/claims', label: 'My Claims' },
         { to: '/recipient/impact', label: 'Impact' },
       ];
@@ -79,11 +79,19 @@ const Navbar = () => {
     return [];
   };
 
+  const isActive = (path) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-steel-10"
-      style={{ opacity: 0 }}
+      className="fixed top-0 left-0 right-0 z-40 backdrop-blur-xl"
+      style={{
+        opacity: 0,
+        background: 'rgba(3, 25, 30, 0.85)',
+        borderBottom: '1px solid rgba(193,207,218,0.08)',
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
@@ -104,7 +112,7 @@ const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  location.pathname === link.to
+                  isActive(link.to)
                     ? 'bg-azure/10 text-azure'
                     : 'text-steel hover:text-white hover:bg-steel-10'
                 }`}
@@ -149,20 +157,12 @@ const Navbar = () => {
                   {dropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-midnight-light border border-steel-20 rounded-xl shadow-2xl overflow-hidden">
                       <div className="px-4 py-3 border-b border-steel-10">
-                        <p className="text-sm font-medium text-white truncate">{user.org_name}</p>
+                        <p className="text-sm font-medium text-white truncate">{user.org_name || 'My Account'}</p>
                         <p className="text-xs text-steel truncate">{user.email}</p>
                       </div>
                       <div className="py-1">
                         <Link
-                          to={`${user.role === 'donor' ? '/donor' : '/recipient'}/settings`}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-steel hover:text-white hover:bg-steel-10 transition-colors"
-                          onClick={() => setDropdownOpen(false)}
-                        >
-                          <Settings className="w-4 h-4" />
-                          Settings
-                        </Link>
-                        <Link
-                          to={`/profile/${user._id}`}
+                          to={`/profile/${user._id || 'me'}`}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-steel hover:text-white hover:bg-steel-10 transition-colors"
                           onClick={() => setDropdownOpen(false)}
                         >
@@ -220,7 +220,7 @@ const Navbar = () => {
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    location.pathname === link.to
+                    isActive(link.to)
                       ? 'bg-azure/10 text-azure'
                       : 'text-steel hover:text-white hover:bg-steel-10'
                   }`}
@@ -228,6 +228,14 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-3 rounded-lg text-sm font-medium text-crimson hover:bg-crimson/10 text-left transition-all cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -237,3 +245,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+export { Navbar };

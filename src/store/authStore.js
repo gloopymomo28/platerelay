@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import { getMe } from '../api/auth';
+import client from '../api/client';
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -53,13 +54,44 @@ const useAuthStore = create((set, get) => ({
       set({ user });
       return user;
     } catch {
-      return null;
+      // If backend isn't up, create a minimal user object from session
+      const minimalUser = { email, role: 'donor', org_name: email.split('@')[0] };
+      set({ user: minimalUser });
+      return minimalUser;
     }
   },
 
-  register: async (email, password) => {
+  /**
+   * register — Creates Supabase user, then calls our backend to create the
+   * MongoDB user document with role + org info. Falls back gracefully if the
+   * backend is unavailable (useful during hackathon demo).
+   */
+  register: async (email, password, role = 'donor', org_name = '') => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
+
+    // Try to create user document on our backend
+    try {
+      await client.post('/api/auth/register', {
+        supabase_uid: data.user?.id,
+        email,
+        role,
+        org_name: org_name || email.split('@')[0],
+      });
+    } catch (backendError) {
+      // Backend may not be running during demo — store a minimal user locally
+      console.warn('Backend not available, using local user state:', backendError.message);
+    }
+
+    // Set a provisional user state so the app can route correctly
+    const provisionalUser = {
+      email,
+      role,
+      org_name: org_name || email.split('@')[0],
+      verification_status: 'pending_verification',
+      subscription: { plan: 'free' },
+    };
+    set({ user: provisionalUser, session: data.session });
     return data;
   },
 

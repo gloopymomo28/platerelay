@@ -5,9 +5,10 @@ const Card = ({
   children,
   className = '',
   hover = true,
-  animate = true,
-  padding = 'p-6',
+  animate = false,   // Changed default to false to prevent flash-of-invisible content
+  padding = '',      // Use empty string so callers control padding via className
   onClick,
+  style,
   ...props
 }) => {
   const cardRef = useRef(null);
@@ -23,13 +24,13 @@ const Card = ({
       ref={cardRef}
       onClick={onClick}
       className={`
-        glass-card ${padding}
+        glass-card
         transition-all duration-300 ease-out
-        ${hover ? 'glass-card-hover cursor-pointer' : ''}
+        ${hover ? 'glass-card-hover' : ''}
         ${onClick ? 'cursor-pointer' : ''}
         ${className}
       `}
-      style={{ opacity: animate ? 0 : 1 }}
+      style={{ opacity: animate ? 0 : 1, ...style }}
       {...props}
     >
       {children}
@@ -38,3 +39,4 @@ const Card = ({
 };
 
 export default Card;
+export { Card };

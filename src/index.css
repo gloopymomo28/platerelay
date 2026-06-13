@@ -5,6 +5,7 @@
   --color-azure: #20A4F3;
   --color-cyan: #59F8E8;
   --color-crimson: #941C2F;
+  --color-saffron: #F4A22D;
   --color-midnight: #03191E;
   --color-steel-10: rgba(193, 207, 218, 0.1);
   --color-steel-20: rgba(193, 207, 218, 0.2);
@@ -12,6 +13,7 @@
   --color-azure-glow: rgba(32, 164, 243, 0.3);
   --color-cyan-glow: rgba(89, 248, 232, 0.3);
   --color-crimson-glow: rgba(148, 28, 47, 0.3);
+  --color-saffron-glow: rgba(244, 162, 45, 0.3);
   --color-midnight-light: #0a2e36;
   --color-midnight-lighter: #0f3d47;
 

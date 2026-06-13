@@ -1,154 +1,411 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import anime from 'animejs';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { AnimatedCounter } from '../components/ui/AnimatedCounter';
 
 export default function Landing() {
   const heroRef = useRef(null);
 
   useEffect(() => {
+    // Stagger hero elements in
     anime({
       targets: '.hero-element',
-      translateY: [20, 0],
+      translateY: [40, 0],
       opacity: [0, 1],
-      delay: anime.stagger(100),
+      delay: anime.stagger(150),
       easing: 'easeOutExpo',
-      duration: 1000
+      duration: 1200,
+    });
+
+    // Animate stats counters
+    const counters = [
+      { el: '#counter-meals', target: 25000 },
+      { el: '#counter-co2', target: 5200 },
+      { el: '#counter-partners', target: 150 },
+    ];
+    counters.forEach(({ el, target }) => {
+      const element = document.querySelector(el);
+      if (!element) return;
+      const obj = { val: 0 };
+      anime({
+        targets: obj,
+        val: target,
+        round: 1,
+        duration: 2500,
+        delay: 800,
+        easing: 'easeOutExpo',
+        update: () => {
+          if (element) element.textContent = Math.floor(obj.val).toLocaleString('en-IN');
+        },
+      });
+    });
+
+    // Float the orbs
+    anime({
+      targets: '.orb',
+      translateY: ['-12px', '12px'],
+      duration: 4000,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutSine',
+      delay: anime.stagger(800),
     });
   }, []);
 
   return (
-    <div className="min-h-screen bg-midnight text-white">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <h1 className="hero-element text-5xl md:text-7xl font-display font-bold mb-6 text-white leading-tight">
-          Because leftovers deserve a <br/><span className="text-azure">standing ovation 🍽️</span>
+    <div className="min-h-screen bg-midnight text-white overflow-x-hidden">
+
+      {/* ─── HERO ─── */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center overflow-hidden">
+
+        {/* Animated background blobs */}
+        <div className="orb absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #20A4F3, transparent 70%)' }} />
+        <div className="orb absolute bottom-1/4 -right-32 w-96 h-96 rounded-full opacity-15 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #59F8E8, transparent 70%)' }} />
+        <div className="orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #F4A22D, transparent 70%)' }} />
+
+        {/* Grid overlay */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(193,207,218,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(193,207,218,0.03) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }} />
+
+        {/* Pill badge */}
+        <div className="hero-element opacity-0 mb-6">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border"
+            style={{ background: 'rgba(32,164,243,0.1)', borderColor: 'rgba(32,164,243,0.3)', color: '#20A4F3' }}>
+            <span className="w-2 h-2 rounded-full bg-cyan animate-pulse inline-block" />
+            Zero-waste food logistics platform
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h1 className="hero-element opacity-0 font-display font-bold leading-[1.05] mb-6"
+          style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)' }}>
+          Because leftovers deserve<br />
+          <span style={{
+            background: 'linear-gradient(135deg, #20A4F3 0%, #59F8E8 50%, #F4A22D 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
+            a standing ovation 🍽️
+          </span>
         </h1>
-        <p className="hero-element text-xl text-steel max-w-2xl mb-10 font-body">
-          Every surplus meal finds its next table. Join the zero-waste food logistics platform connecting donors with local shelters in real-time.
+
+        {/* Subtitle */}
+        <p className="hero-element opacity-0 font-body text-lg md:text-xl max-w-2xl mb-10 leading-relaxed"
+          style={{ color: '#C1CFDA' }}>
+          Every surplus meal finds its next table. Connect restaurants with local shelters
+          in under 15 minutes — real-time, photo-first, zero bureaucracy.
         </p>
-        <div className="hero-element flex flex-col sm:flex-row gap-4">
+
+        {/* CTA Buttons */}
+        <div className="hero-element opacity-0 flex flex-col sm:flex-row gap-4">
           <Link to="/register">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto font-display text-lg">
-              Start Donating
-            </Button>
+            <button className="group relative px-8 py-4 rounded-2xl font-display font-bold text-base overflow-hidden transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
+              <span className="relative z-10 flex items-center gap-2">
+                🍽️ Start Donating
+                <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+              </span>
+            </button>
           </Link>
           <Link to="/register">
-            <Button variant="ghost" size="lg" className="w-full sm:w-auto font-display text-lg">
-              I Represent a Shelter
-            </Button>
+            <button className="px-8 py-4 rounded-2xl font-display font-bold text-base transition-all duration-300 hover:scale-105 hover:border-azure/60"
+              style={{ border: '1px solid rgba(193,207,218,0.25)', color: '#C1CFDA', background: 'rgba(193,207,218,0.05)' }}>
+              🤝 I Represent a Shelter
+            </button>
           </Link>
         </div>
+
+        {/* Social proof strip */}
+        <div className="hero-element opacity-0 mt-16 flex flex-wrap justify-center gap-6 text-sm" style={{ color: 'rgba(193,207,218,0.6)' }}>
+          <span>✓ 100% Free for donors</span>
+          <span>✓ Verified shelters only</span>
+          <span>✓ Sub-2-hour coordination</span>
+          <span>✓ India-first, UPI payments</span>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+          <span className="text-xs font-body" style={{ color: '#C1CFDA' }}>Scroll to explore</span>
+          <div className="w-5 h-9 rounded-full border border-steel/30 flex items-start justify-center pt-1.5">
+            <div className="w-1.5 h-3 rounded-full bg-azure animate-bounce" />
+          </div>
+        </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-midnight border-t border-steel/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-cyan mb-2">
-                <AnimatedCounter to={25000} />+
+      {/* ─── STATS ─── */}
+      <section className="py-20 relative">
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent, rgba(32,164,243,0.04), transparent)' }} />
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-3 gap-4 md:gap-8">
+            {[
+              { id: 'counter-meals', suffix: '+', label: 'Meals Rescued', color: '#59F8E8', icon: '🍛' },
+              { id: 'counter-co2', suffix: ' kg', label: 'CO₂ Reduced', color: '#20A4F3', icon: '🌱' },
+              { id: 'counter-partners', suffix: '+', label: 'Active Partners', color: '#F4A22D', icon: '🤝' },
+            ].map(stat => (
+              <div key={stat.id} className="text-center group">
+                <div className="text-3xl mb-2">{stat.icon}</div>
+                <div className="font-display font-bold mb-1" style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)', color: stat.color }}>
+                  <span id={stat.id}>0</span>{stat.suffix}
+                </div>
+                <div className="text-xs md:text-sm font-body uppercase tracking-widest" style={{ color: 'rgba(193,207,218,0.5)' }}>
+                  {stat.label}
+                </div>
               </div>
-              <div className="text-steel font-body text-sm uppercase tracking-wide">Meals Rescued</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── HOW IT WORKS ─── */}
+      <section className="py-28 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <span className="text-sm font-body uppercase tracking-widest mb-4 block" style={{ color: '#20A4F3' }}>
+              The Process
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold">How PlateRelay Works</h2>
+            <p className="mt-4 font-body text-lg max-w-xl mx-auto" style={{ color: '#C1CFDA' }}>
+              From kitchen to shelter in under two hours. Every time.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            {/* Connector line (desktop) */}
+            <div className="hidden md:block absolute top-16 left-1/6 right-1/6 h-px"
+              style={{ background: 'linear-gradient(90deg, transparent, #20A4F3, #59F8E8, #F4A22D, transparent)' }} />
+
+            {[
+              {
+                step: '01',
+                icon: '📸',
+                title: 'Snap & Post',
+                desc: 'Donors photograph surplus food, set a pickup window, and confirm food safety. Done in 30 seconds.',
+                color: '#20A4F3',
+                glow: 'rgba(32,164,243,0.3)',
+              },
+              {
+                step: '02',
+                icon: '⚡',
+                title: 'Instant Match',
+                desc: 'Verified shelters within radius get an immediate email. First to claim, wins the relay.',
+                color: '#59F8E8',
+                glow: 'rgba(89,248,232,0.3)',
+              },
+              {
+                step: '03',
+                icon: '🤝',
+                title: 'Quick Pickup',
+                desc: 'Shelter arrives before the window closes, donor gets a completion confirmation. Zero waste.',
+                color: '#F4A22D',
+                glow: 'rgba(244,162,45,0.3)',
+              },
+            ].map((item, i) => (
+              <div key={i} className="relative group">
+                <div className="rounded-2xl p-8 h-full transition-all duration-300 hover:-translate-y-2"
+                  style={{
+                    background: 'rgba(193,207,218,0.04)',
+                    border: '1px solid rgba(193,207,218,0.1)',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = item.color + '50'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(193,207,218,0.1)'}
+                >
+                  {/* Step number */}
+                  <div className="text-xs font-bold font-display mb-6" style={{ color: item.color, letterSpacing: '0.15em' }}>
+                    STEP {item.step}
+                  </div>
+                  {/* Icon */}
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-all duration-300"
+                    style={{ background: item.color + '15', boxShadow: `0 0 0 0 ${item.glow}` }}
+                  >
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-display font-bold mb-3">{item.title}</h3>
+                  <p className="font-body leading-relaxed text-sm" style={{ color: '#C1CFDA' }}>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── IMPACT STRIP ─── */}
+      <section className="py-16 px-4 relative overflow-hidden">
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(135deg, rgba(32,164,243,0.08) 0%, rgba(89,248,232,0.05) 50%, rgba(244,162,45,0.05) 100%)',
+        }} />
+        <div className="max-w-4xl mx-auto relative">
+          <div className="rounded-3xl p-8 md:p-12 text-center"
+            style={{ border: '1px solid rgba(32,164,243,0.2)', background: 'rgba(32,164,243,0.06)' }}>
+            <div className="text-5xl mb-4">🌍</div>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              India wastes <span style={{ color: '#941C2F' }}>68 million tonnes</span> of food yearly.<br />
+              <span style={{ color: '#59F8E8' }}>We're fixing the coordination gap.</span>
+            </h2>
+            <p className="font-body text-base max-w-2xl mx-auto" style={{ color: '#C1CFDA' }}>
+              Restaurants can't call every shelter every night. Shelters can't wait by the phone.
+              PlateRelay bridges the sub-2-hour window where food goes from surplus to served.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PRICING ─── */}
+      <section className="py-28 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <span className="text-sm font-body uppercase tracking-widest mb-4 block" style={{ color: '#F4A22D' }}>
+              Pricing
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Simple, Transparent Pricing</h2>
+            <p className="font-body text-lg max-w-xl mx-auto" style={{ color: '#C1CFDA' }}>
+              Donors always eat free. Shelters start for free and grow with us.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {/* Free */}
+            <div className="rounded-2xl p-8 flex flex-col"
+              style={{ background: 'rgba(193,207,218,0.04)', border: '1px solid rgba(193,207,218,0.12)' }}>
+              <div className="text-2xl mb-2">🤲</div>
+              <h3 className="text-xl font-display font-bold mb-1">Free Tier</h3>
+              <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}>Perfect for small shelters getting started</p>
+              <div className="mb-8">
+                <span className="text-5xl font-bold font-display">₹0</span>
+                <span className="text-sm ml-1" style={{ color: '#C1CFDA' }}>/month</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1 text-sm font-body">
+                {['3 claims per month', '10 km search radius', 'Email notifications'].map(f => (
+                  <li key={f} className="flex items-center gap-3" style={{ color: '#C1CFDA' }}>
+                    <span style={{ color: '#59F8E8' }}>✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/register">
+                <button className="w-full py-3 rounded-xl font-display font-bold text-sm transition-all hover:opacity-80"
+                  style={{ border: '1px solid rgba(193,207,218,0.25)', color: '#C1CFDA' }}>
+                  Get Started Free
+                </button>
+              </Link>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-azure mb-2">
-                <AnimatedCounter to={5200} /> kg
+
+            {/* Saathi — highlighted */}
+            <div className="rounded-2xl p-8 flex flex-col relative md:-translate-y-4"
+              style={{
+                background: 'linear-gradient(160deg, rgba(32,164,243,0.15), rgba(89,248,232,0.08))',
+                border: '1px solid rgba(32,164,243,0.4)',
+                boxShadow: '0 0 40px rgba(32,164,243,0.15), 0 20px 60px rgba(0,0,0,0.3)',
+              }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold font-display"
+                style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
+                ★ MOST POPULAR
               </div>
-              <div className="text-steel font-body text-sm uppercase tracking-wide">CO₂ Reduced</div>
+              <div className="text-2xl mb-2">⚡</div>
+              <h3 className="text-xl font-display font-bold mb-1">Saathi Plan</h3>
+              <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}><em>"Saathi" = companion in Hindi</em></p>
+              <div className="mb-8">
+                <span className="text-5xl font-bold font-display" style={{ color: '#20A4F3' }}>₹149</span>
+                <span className="text-sm ml-1" style={{ color: '#C1CFDA' }}>/month</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1 text-sm font-body">
+                {['Unlimited claims', '25 km search radius', 'Instant notifications', 'Priority claim queue', 'Monthly impact summary'].map(f => (
+                  <li key={f} className="flex items-center gap-3" style={{ color: '#C1CFDA' }}>
+                    <span style={{ color: '#59F8E8' }}>✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/register">
+                <button className="w-full py-3 rounded-xl font-display font-bold text-sm transition-all hover:opacity-90 hover:scale-[1.02]"
+                  style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
+                  Upgrade to Saathi →
+                </button>
+              </Link>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-saffron mb-2">
-                <AnimatedCounter to={150} />+
+
+            {/* Daan Pro */}
+            <div className="rounded-2xl p-8 flex flex-col"
+              style={{ background: 'rgba(244,162,45,0.06)', border: '1px solid rgba(244,162,45,0.25)' }}>
+              <div className="text-2xl mb-2">🏆</div>
+              <h3 className="text-xl font-display font-bold mb-1">Daan Pro</h3>
+              <p className="text-sm mb-6" style={{ color: '#C1CFDA' }}>For corporate donors who need CSR proof</p>
+              <div className="mb-8">
+                <span className="text-5xl font-bold font-display" style={{ color: '#F4A22D' }}>₹499</span>
+                <span className="text-sm ml-1" style={{ color: '#C1CFDA' }}>/month</span>
               </div>
-              <div className="text-steel font-body text-sm uppercase tracking-wide">Active Partners</div>
+              <ul className="space-y-3 mb-8 flex-1 text-sm font-body">
+                {['Unlimited listings', 'CSR-ready PDF reports', 'Verified donor badge', 'Analytics dashboard', 'Dedicated account support'].map(f => (
+                  <li key={f} className="flex items-center gap-3" style={{ color: '#C1CFDA' }}>
+                    <span style={{ color: '#F4A22D' }}>✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/register">
+                <button className="w-full py-3 rounded-xl font-display font-bold text-sm transition-all hover:opacity-80"
+                  style={{ border: '1px solid rgba(244,162,45,0.4)', color: '#F4A22D' }}>
+                  Get Daan Pro
+                </button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it Works */}
-      <section className="py-24 bg-steel/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-display font-bold text-center mb-16">How PlateRelay Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-8 text-center bg-midnight/50 border-steel/20 hover:border-azure/50 transition-colors">
-              <div className="w-16 h-16 bg-azure/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">📸</span>
-              </div>
-              <h3 className="text-xl font-bold mb-4 font-display">1. Snap & Post</h3>
-              <p className="text-steel font-body">Donors post surplus food with a photo and pickup window. It takes 30 seconds.</p>
-            </Card>
-            <Card className="p-8 text-center bg-midnight/50 border-steel/20 hover:border-cyan/50 transition-colors">
-              <div className="w-16 h-16 bg-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">⚡</span>
-              </div>
-              <h3 className="text-xl font-bold mb-4 font-display">2. Instant Match</h3>
-              <p className="text-steel font-body">Nearby verified shelters get notified instantly and can claim the food in one tap.</p>
-            </Card>
-            <Card className="p-8 text-center bg-midnight/50 border-steel/20 hover:border-saffron/50 transition-colors">
-              <div className="w-16 h-16 bg-saffron/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h3 className="text-xl font-bold mb-4 font-display">3. Quick Pickup</h3>
-              <p className="text-steel font-body">Shelters pick up the food before the window closes. Zero waste, maximum impact.</p>
-            </Card>
+      {/* ─── FINAL CTA ─── */}
+      <section className="py-28 px-4 text-center relative overflow-hidden">
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(32,164,243,0.08), transparent)',
+        }} />
+        <div className="max-w-3xl mx-auto relative">
+          <div className="text-6xl mb-6">🍽️</div>
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">
+            The kitchen's quiet.<br />
+            <span className="font-accent text-5xl md:text-6xl" style={{ color: '#59F8E8' }}>
+              But not for long.
+            </span>
+          </h2>
+          <p className="font-body text-lg mb-10" style={{ color: '#C1CFDA' }}>
+            Join 150+ organizations already passing the baton on food waste.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register">
+              <button className="px-10 py-4 rounded-2xl font-display font-bold text-base transition-all hover:scale-105 hover:shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E', boxShadow: '0 0 30px rgba(32,164,243,0.3)' }}>
+                Join the Relay — It's Free →
+              </button>
+            </Link>
+            <Link to="/leaderboard">
+              <button className="px-10 py-4 rounded-2xl font-display font-bold text-base transition-all hover:scale-105"
+                style={{ border: '1px solid rgba(193,207,218,0.2)', color: '#C1CFDA', background: 'rgba(193,207,218,0.05)' }}>
+                View Leaderboard 🏆
+              </button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-24 bg-midnight">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-display font-bold text-center mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-center text-steel mb-16 max-w-2xl mx-auto">Donors always use PlateRelay for free. Shelters can start for free and upgrade for unlimited access.</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-8 bg-midnight border-steel/20 flex flex-col">
-              <h3 className="text-xl font-bold mb-2 font-display">Free Tier</h3>
-              <div className="text-3xl font-bold mb-6">₹0<span className="text-sm font-normal text-steel">/mo</span></div>
-              <ul className="text-steel mb-8 flex-1 space-y-3 font-body">
-                <li>✓ 3 claims per month</li>
-                <li>✓ 10 km radius access</li>
-                <li>✓ Email notifications</li>
-              </ul>
-              <Button variant="ghost" className="w-full">Get Started</Button>
-            </Card>
-            
-            <Card className="p-8 bg-midnight border-azure/50 relative transform md:-translate-y-4 shadow-lg shadow-azure/10 flex flex-col">
-              <div className="absolute top-0 right-0 bg-azure text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">POPULAR</div>
-              <h3 className="text-xl font-bold mb-2 font-display">Saathi Plan</h3>
-              <div className="text-3xl font-bold mb-6">₹149<span className="text-sm font-normal text-steel">/mo</span></div>
-              <ul className="text-steel mb-8 flex-1 space-y-3 font-body">
-                <li>✓ Unlimited claims</li>
-                <li>✓ 25 km radius access</li>
-                <li>✓ Instant notifications</li>
-                <li>✓ Priority claim queue</li>
-              </ul>
-              <Button variant="primary" className="w-full">Upgrade to Saathi</Button>
-            </Card>
-            
-            <Card className="p-8 bg-midnight border-steel/20 flex flex-col">
-              <h3 className="text-xl font-bold mb-2 font-display">Daan Pro (Donors)</h3>
-              <div className="text-3xl font-bold mb-6">₹499<span className="text-sm font-normal text-steel">/mo</span></div>
-              <ul className="text-steel mb-8 flex-1 space-y-3 font-body">
-                <li>✓ Unlimited listings</li>
-                <li>✓ CSR-ready PDF reports</li>
-                <li>✓ Certified Donor badge</li>
-                <li>✓ Analytics dashboard</li>
-              </ul>
-              <Button variant="secondary" className="w-full">Get Pro</Button>
-            </Card>
+      {/* ─── FOOTER ─── */}
+      <footer className="py-12 px-4 border-t" style={{ borderColor: 'rgba(193,207,218,0.1)' }}>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
+              style={{ background: 'linear-gradient(135deg, #20A4F3, #59F8E8)', color: '#03191E' }}>
+              PR
+            </div>
+            <span className="font-display font-bold text-white">PlateRelay</span>
+          </div>
+          <p className="font-body text-sm text-center" style={{ color: 'rgba(193,207,218,0.5)' }}>
+            Built with ❤️ for Hackprix 2026 · Every surplus meal finds its next table.
+          </p>
+          <div className="flex gap-6 text-sm font-body" style={{ color: 'rgba(193,207,218,0.5)' }}>
+            <Link to="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>
+            <Link to="/login" className="hover:text-white transition-colors">Login</Link>
+            <Link to="/register" className="hover:text-white transition-colors">Sign Up</Link>
           </div>
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-midnight border-t border-steel/20 py-12 text-center text-steel font-body">
-        <p>Built with ❤️ for Hackprix 2026</p>
-        <p className="mt-2 font-accent text-xl">The kitchen's quiet... but not for long.</p>
       </footer>
     </div>
   );
