@@ -59,7 +59,7 @@ export default function Login() {
              style={{ border: '3px solid #00E5FF', boxShadow: '0 0 30px rgba(0,229,255,0.4)', animationDelay: '1s' }} alt="" />
 
         <div className="relative z-10 text-center max-w-sm">
-          <img src="/pr-logo.jpg" alt="PlateRelay Logo" className="w-40 h-40 object-contain mb-8 mx-auto drop-shadow-[0_0_15px_rgba(255,122,0,0.3)]" />
+          <img src="/pr-logo-new.png" alt="PlateRelay Logo" className="w-40 h-40 object-contain mb-8 mx-auto drop-shadow-[0_0_15px_rgba(255,122,0,0.3)]" />
           <h2 className="text-3xl font-display font-bold text-white mb-4">
             Every relay matters.
           </h2>
@@ -80,8 +80,8 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-10 group">
-            <img src="/pr-logo.jpg" alt="PlateRelay Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
-            <span className="font-display font-bold text-xl text-white group-hover:text-[#FF7A00] transition-colors">PlateRelay</span>
+            <img src="/pr-logo-new.png" alt="PlateRelay Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,122,0,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.5)] transition-all" />
+            <span className="font-display font-bold text-2xl text-white group-hover:text-[#FF7A00] transition-colors">PlateRelay</span>
           </Link>
 
           <div className="mb-8">
