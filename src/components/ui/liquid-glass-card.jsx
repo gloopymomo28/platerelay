@@ -107,77 +107,49 @@ export const LiquidGlassCard = ({
       : {};
 
   return (
-    <>
-      {/* Hidden SVG Filter */}
-      <svg className='hidden'>
-        <defs>
-          <filter
-            id='glass-blur'
-            x='0'
-            y='0'
-            width='100%'
-            height='100%'
-            filterUnits='objectBoundingBox'
-          >
-            <feTurbulence
-              type='fractalNoise'
-              baseFrequency='0.003 0.007'
-              numOctaves='1'
-              result='turbulence'
-            />
-            <feDisplacementMap
-              in='SourceGraphic'
-              in2='turbulence'
-              scale='200'
-              xChannelSelector='R'
-              yChannelSelector='G'
-            />
-          </filter>
-        </defs>
-      </svg>
-      <MotionComponent
-        className={cn(
-          `relative ${draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${expandable ? 'cursor-pointer' : ''}`,
-          className
-        )}
+    <MotionComponent
+      className={cn(
+        `relative ${draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${expandable ? 'cursor-pointer' : ''}`,
+        className
+      )}
+      style={{
+        borderRadius,
+        transform: 'translateZ(0)', // Force hardware acceleration
+        willChange: 'transform',
+        ...(width && !expandable && { width }),
+        ...(height && !expandable && { height }),
+      }}
+      {...motionProps}
+      {...props}
+    >
+      {/* Bend Layer (Backdrop blur) */}
+      <div
+        className={`absolute inset-0 ${blurClasses[blurIntensity]} z-0`}
         style={{
           borderRadius,
-          ...(width && !expandable && { width }),
-          ...(height && !expandable && { height }),
         }}
-        {...motionProps}
-        {...props}
-      >
-        {/* Bend Layer (Backdrop blur with distortion) */}
-        <div
-          className={`absolute inset-0 ${blurClasses[blurIntensity]} z-0`}
-          style={{
-            borderRadius,
-            filter: 'url(#glass-blur)',
-          }}
-        />
+      />
 
-        {/* Face Layer (Main shadow and glow) */}
-        <div
-          className='absolute inset-0 z-10'
-          style={{
-            borderRadius,
-            boxShadow: glowStyles[glowIntensity],
-          }}
-        />
+      {/* Face Layer (Main shadow and glow) */}
+      <div
+        className='absolute inset-0 z-10 pointer-events-none'
+        style={{
+          borderRadius,
+          boxShadow: glowStyles[glowIntensity],
+        }}
+      />
 
-        {/* Edge Layer (Inner highlights) */}
-        <div
-          className='absolute inset-0 z-20'
-          style={{
-            borderRadius,
-            boxShadow: shadowStyles[shadowIntensity],
-          }}
-        />
+      {/* Edge Layer (Inner highlights) */}
+      <div
+        className='absolute inset-0 z-20 pointer-events-none'
+        style={{
+          borderRadius,
+          boxShadow: shadowStyles[shadowIntensity],
+        }}
+      />
 
-        {/* Content */}
-        <div className={cn('relative z-30 h-full w-full')}>{children}</div>
-      </MotionComponent>
-    </>
+      {/* Content */}
+      <div className={cn('relative z-30 h-full w-full')}>{children}</div>
+    </MotionComponent>
   );
 };
