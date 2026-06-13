@@ -10,11 +10,8 @@ export default function Landing() {
   const { user, initialized } = useAuthStore();
 
   useEffect(() => {
-    // If user is already logged in, redirect them to their dashboard instead of keeping them on the landing page
-    if (initialized && user) {
-      navigate(user.role === 'recipient' ? '/recipient/dashboard' : '/donor/dashboard', { replace: true });
-    }
-  }, [user, initialized, navigate]);
+    // Intentionally empty. Users can browse the landing page even when logged in.
+  }, []);
 
   useEffect(() => {
     anime({
