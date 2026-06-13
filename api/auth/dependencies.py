@@ -32,10 +32,10 @@ async def get_current_user(
         supabase_uid = auth_response.user.id
     except HTTPException:
         raise
-    except Exception:
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication failed. Token verification error.",
+            detail=f"Authentication failed. Token verification error: {str(e)}",
         )
 
     db = get_db()
