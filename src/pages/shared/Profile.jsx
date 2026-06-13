@@ -86,9 +86,9 @@ export default function Profile() {
     );
   }
 
-  const memberSince = new Date(profile.created_at).toLocaleDateString('en-IN', {
-    month: 'long', year: 'numeric'
-  });
+  const memberSince = profile.created_at 
+    ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+    : 'Unknown';
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
@@ -115,7 +115,7 @@ export default function Profile() {
 
             <div className="flex flex-wrap gap-2 mb-3">
               <Badge variant={profile.role}>{roleLabel[profile.role] || profile.role}</Badge>
-              {profile.subscription?.plan !== 'free' && (
+              {profile.subscription?.plan && profile.subscription.plan !== 'free' && (
                 <Badge variant={profile.subscription.plan}>
                   {planLabel[profile.subscription.plan]}
                 </Badge>
