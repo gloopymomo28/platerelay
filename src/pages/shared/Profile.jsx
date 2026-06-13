@@ -146,6 +146,7 @@ export default function Profile() {
       <div className="profile-item" style={{ opacity: 0 }}>
         <Card className="p-6 border-steel/20" hover={false}>
           <h2 className="text-xl font-display font-bold text-white mb-4">🏆 Achievements</h2>
+          <div className="flex flex-wrap gap-4">
             {profile.badges.map((badge, i) => (
               <div
                 key={i}
