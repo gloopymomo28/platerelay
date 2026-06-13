@@ -23,16 +23,16 @@ const categoryEmoji = {
 
 const userIcon = new L.divIcon({
   className: 'custom-user-icon',
-  html: `<div style="background-color: #3b82f6; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>`,
-  iconSize: [18, 18],
-  iconAnchor: [9, 9]
+  html: `<div style="background-color: #3b82f6; width: 100%; height: 100%; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5); box-sizing: border-box;"></div>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10]
 });
 
 const relayIcon = new L.divIcon({
   className: 'custom-relay-icon',
-  html: `<div style="background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
-  iconSize: [14, 14],
-  iconAnchor: [7, 7]
+  html: `<div style="background-color: #ef4444; width: 100%; height: 100%; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); box-sizing: border-box;"></div>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8]
 });
 
 const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPending }) => {
@@ -63,7 +63,7 @@ const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPendin
       />
 
       {/* Shelter Location Circle */}
-      {centerLat && centerLng && (
+      {centerLat !== 0 && centerLng !== 0 && (
         <Circle
           center={position}
           radius={radiusKm * 1000} // meters
@@ -72,7 +72,7 @@ const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPendin
       )}
 
       {/* Shelter Marker */}
-      {centerLat && centerLng && (
+      {centerLat !== 0 && centerLng !== 0 && (
         <Marker position={position} icon={userIcon}>
           <Popup>
             <div className="text-center font-display font-bold">Your Location</div>
