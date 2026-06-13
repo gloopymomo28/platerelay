@@ -73,7 +73,7 @@ const RelayMap = ({ relays, centerLat, centerLng, radiusKm, onClaim, claimPendin
 
       {/* Shelter Marker */}
       {centerLat !== 0 && centerLng !== 0 && (
-        <Marker position={position} icon={userIcon}>
+        <Marker position={position} icon={userIcon} zIndexOffset={1000}>
           <Popup>
             <div className="text-center font-display font-bold">Your Location</div>
           </Popup>
