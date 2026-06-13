@@ -126,7 +126,7 @@ export default function Profile() {
             <p className="text-steel text-sm font-body">Member since {memberSince}</p>
           </div>
 
-          {isOwnProfile && (
+          {(!id || id === 'me' || id === currentUser?._id) && (
             <Link to={`/${currentUser?.role === 'donor' ? 'donor' : 'recipient'}/dashboard`}>
               <Button variant="ghost" size="sm">← Back to Dashboard</Button>
             </Link>
