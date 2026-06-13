@@ -71,8 +71,12 @@ export default function MyRelays() {
   };
 
   const formatWindow = (start, end) => {
-    const s = new Date(start);
-    const e = new Date(end);
+    // Backend naive datetimes are returned without 'Z', which causes the browser to parse them as local time instead of UTC.
+    // By appending 'Z', we force the browser to treat the string as UTC, which is correct.
+    const safeStart = start.endsWith('Z') ? start : `${start}Z`;
+    const safeEnd = end.endsWith('Z') ? end : `${end}Z`;
+    const s = new Date(safeStart);
+    const e = new Date(safeEnd);
     const fmt = (d) => d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
     const date = s.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     return `${date}, ${fmt(s)} – ${fmt(e)}`;
@@ -147,9 +151,19 @@ export default function MyRelays() {
                 className="relay-row glass-card p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:border-azure/30 transition-all"
                 style={{ opacity: 0 }}
               >
-                {/* Category Icon */}
-                <div className="w-14 h-14 rounded-xl bg-steel-10 flex items-center justify-center text-2xl flex-shrink-0">
-                  {categoryEmoji[relay.category] || '🍱'}
+                {/* Photo */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-steel-10 flex-shrink-0 overflow-hidden relative">
+                  {relay.photo?.thumbnail_url || relay.photo?.cloudinary_url ? (
+                    <img 
+                      src={relay.photo.thumbnail_url || relay.photo.cloudinary_url} 
+                      alt={relay.food_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-2xl">
+                      {categoryEmoji[relay.category] || '🍱'}
+                    </div>
+                  )}
                 </div>
 
                 {/* Info */}

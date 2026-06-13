@@ -1,10 +1,20 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import anime from 'animejs';
 import { FloatingFoodHero } from '../components/ui/hero-section-7';
+import useAuthStore from '../store/authStore';
 
 export default function Landing() {
   const heroRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, initialized } = useAuthStore();
+
+  useEffect(() => {
+    // If user is already logged in, redirect them to their dashboard instead of keeping them on the landing page
+    if (initialized && user) {
+      navigate(user.role === 'recipient' ? '/recipient/dashboard' : '/donor/dashboard', { replace: true });
+    }
+  }, [user, initialized, navigate]);
 
   useEffect(() => {
     anime({
