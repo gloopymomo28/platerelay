@@ -50,12 +50,8 @@ export default function Profile() {
   const { data: recipientRelaysData } = useClaimedRelays();
   const relaysData = currentUser?.role === 'recipient' ? recipientRelaysData : donorRelaysData;
 
-  // Use current user data if viewing own profile, otherwise mock
-  const isOwnProfile = !id || id === 'me' || id === currentUser?._id;
-  
-  // Real stats from the backend vs mock stats
-  const profile = isOwnProfile && currentUser
-    ? { 
+  // Real stats from the backend
+  const profile = currentUser ? { 
         ...currentUser,
         stats: {
           total_meals: impactData?.total_meals_donated || impactData?.total_meals_received || 0,
@@ -67,19 +63,28 @@ export default function Profile() {
         recent_relays: (relaysData?.relays || []).filter(r => r.status === 'completed' || r.status === 'claimed').slice(0, 5),
         city: currentUser.address?.city || 'City not set',
         state: currentUser.address?.state || 'State not set'
-      }
-    : getProfileData(id);
+      } : null;
 
   useEffect(() => {
-    anime({
-      targets: '.profile-item',
-      translateY: [20, 0],
-      opacity: [0, 1],
-      delay: anime.stagger(100),
-      easing: 'easeOutExpo',
-      duration: 700,
-    });
-  }, []);
+    if (profile) {
+      anime({
+        targets: '.profile-item',
+        translateY: [20, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(100),
+        easing: 'easeOutExpo',
+        duration: 700,
+      });
+    }
+  }, [profile]);
+
+  if (!profile) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="animate-spin text-azure text-4xl">🌍</div>
+      </div>
+    );
+  }
 
   const memberSince = new Date(profile.created_at).toLocaleDateString('en-IN', {
     month: 'long', year: 'numeric'
