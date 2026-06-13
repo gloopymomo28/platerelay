@@ -10,8 +10,14 @@ export default function Landing() {
   const { user, initialized } = useAuthStore();
 
   useEffect(() => {
-    // Intentionally empty. Users can browse the landing page even when logged in.
-  }, []);
+    if (initialized && user) {
+      if (user.role === 'donor') {
+        navigate('/donor/dashboard', { replace: true });
+      } else if (user.role === 'recipient') {
+        navigate('/recipient/dashboard', { replace: true });
+      }
+    }
+  }, [user, initialized, navigate]);
 
   useEffect(() => {
     anime({
