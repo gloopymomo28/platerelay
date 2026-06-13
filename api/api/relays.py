@@ -11,7 +11,7 @@ from fastapi import (
 )
 from bson import ObjectId
 
-from auth.dependencies import require_donor, require_recipient, require_verified
+from auth.dependencies import require_donor, require_recipient, require_verified, get_current_user
 from database import get_db
 from config import get_settings
 from models.common import FoodCategory, QuantityUnit, VegStatus, RelayStatus
@@ -151,7 +151,7 @@ async def create_relay(
 async def get_my_relays(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
-    user: dict = Depends(require_verified),
+    user: dict = Depends(get_current_user),
 ):
     """List relays posted by the current donor (paginated)."""
     db = get_db()
@@ -178,7 +178,7 @@ async def get_nearby_relays(
     lat: float = Query(..., description="Latitude"),
     lng: float = Query(..., description="Longitude"),
     radius_km: float = Query(10, ge=1, le=50),
-    user: dict = Depends(require_verified),
+    user: dict = Depends(get_current_user),
 ):
     """
     List active, non-expired relays within radius.
@@ -263,7 +263,7 @@ async def get_claimed_relays(
 # GET /api/relays/:id — Single relay detail
 # ─────────────────────────────────────────────────────────────
 @router.get("/{relay_id}")
-async def get_relay(relay_id: str, user: dict = Depends(require_verified)):
+async def get_relay(relay_id: str, user: dict = Depends(get_current_user)):
     """Get a single relay by ID."""
     db = get_db()
     try:
@@ -574,7 +574,7 @@ async def unclaim_relay(
 async def confirm_relay(
     relay_id: str,
     background_tasks: BackgroundTasks,
-    user: dict = Depends(require_verified),
+    user: dict = Depends(get_current_user),
 ):
     """
     Donor or recipient confirms pickup completed.
