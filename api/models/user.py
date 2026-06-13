@@ -59,6 +59,9 @@ class UserCreateFromFrontend(BaseModel):
     email: EmailStr
     role: Role = Field(..., description="donor or recipient")
     org_name: Optional[str] = Field(None, max_length=200)
+    phone: Optional[str] = Field(None, pattern=r"^\+?\d{10,15}$")
+    address: Optional[Address] = None
+    location: Optional[GeoLocation] = None
 
 
 class ProfileComplete(BaseModel):

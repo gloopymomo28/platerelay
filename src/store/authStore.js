@@ -79,19 +79,20 @@ const useAuthStore = create((set, get) => ({
 
     // Try to create user document on our backend
     try {
-      await client.post('/api/auth/register', {
+      const registerPayload = {
         supabase_uid: data.user?.id,
         email,
         role,
         org_name: org_name || email.split('@')[0],
-      });
-      
-      // If we have full address/location data, complete the profile immediately
+      };
+
       if (fullProfile) {
-        // Need to set the session token so the backend recognizes the user
-        set({ session: data.session }); 
-        await client.post('/api/auth/complete-profile', fullProfile);
+        registerPayload.phone = fullProfile.phone;
+        registerPayload.address = fullProfile.address;
+        registerPayload.location = fullProfile.location;
       }
+
+      await client.post('/api/auth/register', registerPayload);
     } catch (backendError) {
       // Backend may not be running during demo — store a minimal user locally
       console.warn('Backend not available, using local user state:', backendError.message);
