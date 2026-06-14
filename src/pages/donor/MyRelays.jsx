@@ -7,7 +7,9 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import toast from 'react-hot-toast';
-import { useMyRelays, useClaimedRelays, useCancelRelay } from '../../api/relays';
+import { useMyRelays, useClaimedRelays, useCancelRelay, useScanQRRelay } from '../../api/relays';
+import { QRCodeCanvas } from 'qrcode.react';
+import { QRScannerModal } from '../../components/ui/QRScannerModal';
 import useAuthStore from '../../store/authStore';
 import { FloatingBackground } from '../../components/ui/FloatingBackground';
 import { LiquidGlassCard } from '../../components/ui/liquid-glass-card';
@@ -45,6 +47,10 @@ export default function MyRelays() {
   
   const { data, isLoading } = isDonor ? myRelaysQuery : claimedRelaysQuery;
   const cancelRelay = useCancelRelay();
+  const scanQRRelay = useScanQRRelay();
+
+  const [scanTarget, setScanTarget] = useState(null);
+  const [qrTarget, setQrTarget] = useState(null);
   
   const relays = data?.relays || [];
 
@@ -69,6 +75,19 @@ export default function MyRelays() {
       },
       onError: (error) => {
         toast.error(error?.response?.data?.detail || 'Failed to cancel relay');
+      }
+    });
+  };
+
+  const handleScan = (qr_secret) => {
+    if (!scanTarget) return;
+    scanQRRelay.mutate({ relayId: scanTarget.id, qr_secret }, {
+      onSuccess: () => {
+        setScanTarget(null);
+        toast.success('Pickup Confirmed! Relay Completed! 🎉');
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.detail || 'Invalid QR code.');
       }
     });
   };
@@ -185,20 +204,58 @@ export default function MyRelays() {
                     <span>{relay.quantity?.value} {relay.quantity?.unit}</span>
                     <span>{formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
                   </div>
+                  </div>
+
+                  {/* Personalized Impact / Contact Info */}
+                  {relay.status === 'claimed' && (
+                    <div className="mt-3 p-3 bg-midnight/40 rounded-lg border border-steel/10">
+                      {isDonor && relay.recipient_info ? (
+                        <>
+                          <p className="text-sm font-bold text-azure mb-1">Your {relay.food_name} is going to {relay.recipient_info.org_name}!</p>
+                          <p className="text-xs text-steel">Contact: {relay.recipient_info.email} | {relay.recipient_info.phone}</p>
+                        </>
+                      ) : !isDonor && relay.donor_info ? (
+                        <>
+                          <p className="text-sm font-bold text-azure mb-1">Donor: {relay.donor_info.org_name}</p>
+                          <p className="text-xs text-steel">Contact: {relay.donor_info.email} | {relay.donor_info.phone}</p>
+                        </>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions */}
-                {canCancel && (
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    icon={Trash2}
-                    onClick={() => setCancelTarget(relay)}
-                    disabled={cancelRelay.isPending}
-                  >
-                    Cancel
-                  </Button>
-                )}
+                <div className="flex flex-col gap-2">
+                  {canCancel && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      icon={Trash2}
+                      onClick={() => setCancelTarget(relay)}
+                      disabled={cancelRelay.isPending}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  {relay.status === 'claimed' && isDonor && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => setScanTarget(relay)}
+                    >
+                      Scan QR to Complete
+                    </Button>
+                  )}
+                  {relay.status === 'claimed' && !isDonor && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setQrTarget(relay)}
+                    >
+                      Show QR Code
+                    </Button>
+                  )}
+                </div>
               </LiquidGlassCard>
             );
           })}
@@ -221,7 +278,42 @@ export default function MyRelays() {
             {cancelRelay.isPending ? 'Cancelling...' : 'Yes, Cancel'}
           </Button>
         </div>
+        </div>
       </Modal>
+
+      {/* QR Scanner Modal for Donors */}
+      <QRScannerModal 
+        isOpen={!!scanTarget} 
+        onClose={() => setScanTarget(null)} 
+        onScan={handleScan} 
+      />
+
+      {/* QR Code Modal for Recipients */}
+      <Modal
+        isOpen={!!qrTarget}
+        onClose={() => setQrTarget(null)}
+        title="Pickup QR Code"
+      >
+        <div className="flex flex-col items-center justify-center p-6 text-center">
+          <p className="text-steel font-body mb-6">
+            Show this QR code to the donor when you arrive to pick up the food.
+          </p>
+          <div className="bg-white p-4 rounded-xl shadow-lg">
+            {qrTarget?.qr_secret && (
+              <QRCodeCanvas 
+                value={qrTarget.qr_secret} 
+                size={200}
+                level="H"
+                fgColor="#03191E"
+              />
+            )}
+          </div>
+          <p className="text-sm font-bold text-azure mt-6">
+            Relay: {qrTarget?.food_name}
+          </p>
+        </div>
+      </Modal>
+
       </div>
     </div>
   );

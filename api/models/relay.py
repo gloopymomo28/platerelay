@@ -61,6 +61,9 @@ class RelayCreate(BaseModel):
         ..., description="Must be True — donor confirms food safety pledge"
     )
 
+class QRScanPayload(BaseModel):
+    qr_secret: str = Field(..., description="The secret string from the QR code")
+
 
 class RelayUpdate(BaseModel):
     """Editable relay fields (only if active + unclaimed)."""
@@ -94,6 +97,7 @@ class RelayResponse(BaseModel):
     status: str
     claimed_by: Optional[str] = None
     claimed_at: Optional[datetime] = None
+    qr_secret: Optional[str] = None
     donor_confirmed_completion: bool = False
     recipient_confirmed_completion: bool = False
     quality_pledge_confirmed: bool = True

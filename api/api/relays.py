@@ -4,6 +4,8 @@ CRUD for food relays, nearby listing with $geoNear + lazy expiry,
 claim/unclaim with lazy counter reset, and completion confirmation.
 """
 
+import secrets
+import string
 from datetime import datetime, timedelta
 from fastapi import (
     APIRouter, BackgroundTasks, Depends, HTTPException,
@@ -15,7 +17,7 @@ from auth.dependencies import require_donor, require_recipient, require_verified
 from database import get_db
 from config import get_settings
 from models.common import FoodCategory, QuantityUnit, VegStatus, RelayStatus
-from models.relay import RelayCreate, RelayUpdate
+from models.relay import RelayCreate, RelayUpdate, QRScanPayload
 from services.cloudinary_service import upload_relay_photo, delete_photo
 from services.notification_service import notify_nearby_recipients, create_notification
 from services.email_service import send_relay_claimed_email, send_relay_unclaimed_email
@@ -180,6 +182,19 @@ async def get_my_relays(
 
     relays = await db.relays.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
 
+    for relay in relays:
+        if relay.get("claimed_by"):
+            recipient = await db.users.find_one(
+                {"_id": relay["claimed_by"]},
+                {"org_name": 1, "email": 1, "phone": 1}
+            )
+            if recipient:
+                relay["recipient_info"] = {
+                    "org_name": recipient.get("org_name", "Anonymous"),
+                    "email": recipient.get("email"),
+                    "phone": recipient.get("phone")
+                }
+
     return {
         "relays": [_serialize_relay(r) for r in relays],
         "total": total,
@@ -268,6 +283,18 @@ async def get_claimed_relays(
     total = await db.relays.count_documents(query)
 
     relays = await db.relays.find(query).sort("claimed_at", -1).skip(skip).limit(limit).to_list(limit)
+
+    for relay in relays:
+        donor = await db.users.find_one(
+            {"_id": relay["donor_id"]},
+            {"org_name": 1, "email": 1, "phone": 1}
+        )
+        if donor:
+            relay["donor_info"] = {
+                "org_name": donor.get("org_name", "Anonymous"),
+                "email": donor.get("email"),
+                "phone": donor.get("phone")
+            }
 
     return {
         "relays": [_serialize_relay(r) for r in relays],
@@ -463,12 +490,17 @@ async def claim_relay(
             )
 
     # ── Proceed with claim ──
+    # Generate a unique 8-character secure alphanumeric string for the QR code
+    alphabet = string.ascii_letters + string.digits
+    qr_secret = ''.join(secrets.choice(alphabet) for i in range(8))
+    
     result = await db.relays.update_one(
         {"_id": ObjectId(relay_id), "status": "active"},
         {"$set": {
             "status": "claimed",
             "claimed_by": recipient["_id"],
             "claimed_at": now,
+            "qr_secret": qr_secret,
             "updated_at": now,
         }},
     )
@@ -581,6 +613,64 @@ async def unclaim_relay(
         )
 
     return {"message": "Relay released. It's back on the board for others. 🔄"}
+
+
+# ─────────────────────────────────────────────────────────────
+# POST /api/relays/:id/scan-qr — Donor scans recipient's QR
+# ─────────────────────────────────────────────────────────────
+@router.post("/{relay_id}/scan-qr")
+async def scan_qr_relay(
+    relay_id: str,
+    payload: QRScanPayload,
+    background_tasks: BackgroundTasks,
+    user: dict = Depends(require_donor),
+):
+    """
+    Donor scans QR code from recipient to instantly complete the relay.
+    """
+    db = get_db()
+    now = datetime.utcnow()
+
+    try:
+        relay = await db.relays.find_one({"_id": ObjectId(relay_id)})
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid relay ID.")
+
+    if not relay:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Relay not found.")
+    if relay["donor_id"] != user["_id"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not your relay!")
+    if relay["status"] != "claimed":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Relay must be claimed to be scanned.")
+    if relay.get("qr_secret") != payload.qr_secret:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid QR code. Did they scan the right one? 🕵️‍♂️")
+
+    # Mark as fully completed instantly
+    await db.relays.update_one(
+        {"_id": ObjectId(relay_id)},
+        {"$set": {
+            "status": "completed", 
+            "donor_confirmed_completion": True,
+            "recipient_confirmed_completion": True,
+            "updated_at": now
+        }}
+    )
+
+    # ── Check badges for donor ──
+    background_tasks.add_task(check_and_award_badges, user)
+
+    # Notify recipient
+    if relay.get("claimed_by"):
+        await create_notification(
+            user_id=relay["claimed_by"],
+            notification_type="claim_confirmed",
+            title="🎉 Pickup Completed!",
+            body=f"QR code scanned! Thanks for picking up '{relay['food_name']}'.",
+            relay_id=relay["_id"],
+        )
+
+    return {"message": "QR Scan successful! Relay completed. Another meal relayed! 🎉"}
+
 
 
 # ─────────────────────────────────────────────────────────────

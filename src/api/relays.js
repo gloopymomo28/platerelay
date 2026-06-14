@@ -103,6 +103,20 @@ export const useConfirmRelay = () => {
   });
 };
 
+export const useScanQRRelay = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ relayId, qr_secret }) => {
+      const response = await client.post(`/api/relays/${relayId}/scan-qr`, { qr_secret });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['relays'] });
+      queryClient.invalidateQueries({ queryKey: ['impact', 'summary'] });
+    },
+  });
+};
+
 export const useCancelRelay = () => {
   const queryClient = useQueryClient();
   return useMutation({
