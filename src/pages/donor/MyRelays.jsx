@@ -204,7 +204,6 @@ export default function MyRelays() {
                     <span>{relay.quantity?.value} {relay.quantity?.unit}</span>
                     <span>{formatWindow(relay.pickup_window.start, relay.pickup_window.end)}</span>
                   </div>
-                  </div>
 
                   {/* Personalized Impact / Contact Info */}
                   {relay.status === 'claimed' && (
@@ -277,7 +276,6 @@ export default function MyRelays() {
           <Button variant="danger" onClick={() => handleCancel(cancelTarget)} disabled={cancelRelay.isPending}>
             {cancelRelay.isPending ? 'Cancelling...' : 'Yes, Cancel'}
           </Button>
-        </div>
         </div>
       </Modal>
 
